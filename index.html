@@ -83,20 +83,15 @@
   .status{display:flex;align-items:center;gap:10px;padding:40px 0;color:var(--text3);font-size:13px;justify-content:center}
   .spinner{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .err-banner{background:var(--red-dim);border:1px solid rgba(255,107,107,0.2);border-radius:var(--radius);padding:12px 16px;font-size:12px;color:var(--red);margin-bottom:12px;font-family:var(--mono);line-height:1.6}
+  .err-banner{background:var(--red-dim);border:1px solid rgba(255,107,107,0.2);border-radius:var(--radius);padding:12px 16px;font-size:12px;color:var(--red);margin-bottom:12px;font-family:var(--mono);line-height:1.8}
   .warn-banner{background:var(--amber-dim);border:1px solid rgba(245,166,35,0.2);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--amber);margin-bottom:12px;font-family:var(--mono)}
   .footnote{font-size:10px;color:var(--text3);font-family:var(--mono);text-align:center;padding:16px 0 4px}
   .mb{margin-bottom:12px}
-  .cors-help{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 28px;max-width:600px;margin:40px auto}
-  .cors-help h2{font-family:var(--mono);font-size:14px;color:var(--blue);margin-bottom:12px}
-  .cors-help p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px}
-  .cors-help code{background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:8px 12px;display:block;font-family:var(--mono);font-size:11px;color:var(--text);margin:10px 0;word-break:break-all}
-  .cors-help ol{padding-left:18px;font-size:13px;color:var(--text2);line-height:2}
+  .sleeve-label{font-size:9px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:6px 0 4px;border-bottom:1px solid var(--border);margin-bottom:2px}
 </style>
 </head>
 <body>
 <div class="app">
-
   <div class="header">
     <div class="header-left">
       <div class="logo">port<span>.</span>tracker</div>
@@ -115,11 +110,8 @@
 
   <div id="main" style="display:none">
     <div class="metrics" id="metrics"></div>
+
     <div class="grid-2 mb">
-      <div class="card">
-        <div class="card-title">performance since jan 1 2026</div>
-        <div class="ch" style="height:190px"><canvas id="perf-chart" role="img" aria-label="Portfolio performance since Jan 1 2026"></canvas></div>
-      </div>
       <div class="card">
         <div class="card-title">allocation</div>
         <div class="vtabs">
@@ -129,226 +121,270 @@
           <button class="vtab" onclick="setAllocView('currency')">currency</button>
         </div>
         <div class="legend" id="alloc-legend"></div>
-        <div class="ch" style="height:130px"><canvas id="alloc-chart" role="img" aria-label="Allocation breakdown"></canvas></div>
+        <div class="ch" style="height:150px"><canvas id="alloc-chart" role="img" aria-label="Allocation breakdown"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">sleeve breakdown</div>
+        <div class="legend" id="sleeve-legend"></div>
+        <div class="ch" style="height:150px"><canvas id="sleeve-chart" role="img" aria-label="Equity vs Fixed vs Cash"></canvas></div>
       </div>
     </div>
+
     <div id="rebal-section" style="display:none" class="card mb">
       <div class="card-title">⊞ rebalance — trades needed to restore target weights</div>
       <div id="rebal-content"></div>
     </div>
+
     <div class="card mb">
       <div class="card-title" id="holdings-title">holdings</div>
       <div class="tbl-wrap">
         <table>
           <thead><tr>
-            <th>ticker</th><th>price</th><th>day chg</th>
-            <th>target wt</th><th>curr wt</th><th>drift</th>
-            <th>mkt val (CAD)</th><th>ytd gain/loss</th>
+            <th>ticker</th>
+            <th>price</th>
+            <th>day chg</th>
+            <th>target wt</th>
+            <th>curr wt</th>
+            <th>drift</th>
+            <th>mkt val (CAD)</th>
+            <th>total return</th>
           </tr></thead>
           <tbody id="holdings-body"></tbody>
         </table>
       </div>
     </div>
+
     <div class="grid-3 mb">
-      <div class="card"><div class="card-title">sector</div><div class="legend" id="sector-legend"></div><div class="ch" style="height:150px"><canvas id="sector-chart" role="img" aria-label="Sector breakdown"></canvas></div></div>
-      <div class="card"><div class="card-title">geography</div><div class="legend" id="geo-legend"></div><div class="ch" style="height:150px"><canvas id="geo-chart" role="img" aria-label="Geographic breakdown"></canvas></div></div>
-      <div class="card"><div class="card-title">currency exposure</div><div class="legend" id="curr-legend"></div><div class="ch" style="height:150px"><canvas id="curr-chart" role="img" aria-label="Currency breakdown"></canvas></div></div>
+      <div class="card">
+        <div class="card-title">sector</div>
+        <div class="legend" id="sector-legend"></div>
+        <div class="ch" style="height:150px"><canvas id="sector-chart" role="img" aria-label="Sector breakdown"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">geography</div>
+        <div class="legend" id="geo-legend"></div>
+        <div class="ch" style="height:150px"><canvas id="geo-chart" role="img" aria-label="Geographic breakdown"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">currency exposure</div>
+        <div class="legend" id="curr-legend"></div>
+        <div class="ch" style="height:150px"><canvas id="curr-chart" role="img" aria-label="Currency breakdown"></canvas></div>
+      </div>
     </div>
     <div class="footnote" id="footnote"></div>
   </div>
-
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────────
-const SHEET_ID = '1Is6Klorkyyy2F-TKLFKentZuP00Rn0OlCwLpbyf7tAY';
-const API_KEY  = 'AIzaSyDIXN_Bj8fWRydDxEoNfVsMezvvhcXN0iQ';
-const EQUITY_AUM  = 630000;
-const FIXED_AUM   = 350000;
-const CASH_EQUITY = 20000;
-const SOLO_AUM    = 198000;
-const SOLO_CASH   = 2000;
-const COLORS = ['#4a9eff','#3dd68c','#f5a623','#ff6b6b','#c084fc','#fb923c','#34d399','#60a5fa','#f472b6','#a78bfa','#fbbf24','#4ade80','#f87171','#38bdf8'];
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const SHEET_ID    = '1Is6Klorkyyy2F-TKLFKentZuP00Rn0OlCwLpbyf7tAY';
+const API_KEY     = 'AIzaSyDIXN_Bj8fWRydDxEoNfVsMezvvhcXN0iQ';
+const EQUITY_AUM  = 630000;  // equity sleeve of paired portfolio
+const FIXED_AUM   = 350000;  // fixed sleeve of paired portfolio
+const CASH_EQUITY = 20000;   // cash in paired portfolio
+const SOLO_AUM    = 198000;  // portfolio 6 equity sleeve
+const SOLO_CASH   = 2000;    // portfolio 6 cash
+// Sleeve weights within the full $1M paired portfolio
+const EQUITY_WEIGHT = 0.63;
+const FIXED_WEIGHT  = 0.35;
+const CASH_WEIGHT   = 0.02;
 
-// ── STATE ────────────────────────────────────────────────────────────────────
-let models=[], holdings=[], pairings=[];
-let priceData={}, usdcadRate=1.363;
+const COLORS = ['#4a9eff','#3dd68c','#f5a623','#ff6b6b','#c084fc','#fb923c','#34d399','#60a5fa','#f472b6','#a78bfa','#fbbf24','#4ade80','#f87171','#38bdf8','#818cf8','#e879f9'];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let models=[], holdings=[], pairings=[], priceMap={};
+let usdcadRate=1.363;
 let activeModelId=1, activeSleeve='pair', allocView='weight';
-let charts={}, rebalOpen=false, failed=[];
+let charts={}, rebalOpen=false;
 
-// ── HELPERS ──────────────────────────────────────────────────────────────────
-function $(id){return document.getElementById(id);}
-const setStatus=msg=>$('status-msg').textContent=msg;
-const showStatus=v=>$('status-area').style.display=v?'flex':'none';
-const showMain=v=>$('main').style.display=v?'block':'none';
+// ── UTILITIES ─────────────────────────────────────────────────────────────────
+function gi(id){return document.getElementById(id);}
+function setStatus(m){gi('status-msg').textContent=m;}
+function showStatus(v){gi('status-area').style.display=v?'flex':'none';}
+function showMain(v){gi('main').style.display=v?'block':'none';}
 function fmt(n,d=0){if(isNaN(n)||n==null)return'—';const a=Math.abs(n);return a>=1e6?(n/1e6).toFixed(2)+'M':n.toLocaleString('en-CA',{minimumFractionDigits:d,maximumFractionDigits:d});}
 function fmtC(n){return(n<0?'-$':'$')+fmt(Math.abs(n));}
 function fmtP(n){return(n>=0?'+':'')+n.toFixed(2)+'%';}
 function toCad(val,cur){return cur==='USD'?val*usdcadRate:val;}
-function destroyChart(k){if(charts[k]){charts[k].destroy();charts[k]=null;}}
+function destroyChart(k){if(charts[k]){charts[k].destroy();delete charts[k];}}
 
-// ── SHEET LOADING ────────────────────────────────────────────────────────────
-async function fetchSheetRange(range){
+// ── SHEET FETCHING ────────────────────────────────────────────────────────────
+async function fetchRange(range){
   const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
   const r=await fetch(url);
   if(!r.ok){const e=await r.json();throw new Error(e.error?.message||`HTTP ${r.status}`);}
-  return (await r.json()).values||[];
+  return(await r.json()).values||[];
 }
 
 function parseModels(rows){
   const h=rows[0].map(x=>x.toLowerCase().trim());
-  return rows.slice(1).map(r=>{
-    const o={};h.forEach((k,i)=>o[k]=r[i]||'');
-    return{id:+o.model_id,name:o.model_name,type:o.model_type,currency:o.reporting_currency,
-      aum:parseFloat((o.total_aum||'').replace(/[$,]/g,''))||1000000,desc:o.description};
+  return rows.slice(1).filter(r=>r[0]).map(r=>{
+    const o={};h.forEach((k,i)=>o[k]=(r[i]||'').trim());
+    return{id:+o.model_id,name:o.model_name,type:o.model_type,
+      currency:o.reporting_currency,aum:parseFloat((o.total_aum||'').replace(/[$,]/g,''))||1000000,desc:o.description};
   });
 }
+
 function parseHoldings(rows){
   const h=rows[0].map(x=>x.toLowerCase().trim());
-  return rows.slice(1).map(r=>{
-    const o={};h.forEach((k,i)=>o[k]=r[i]||'');
-    if(!o.ticker)return null;
-    return{modelId:+o.model_id,ticker:o.ticker.trim(),name:o.name,
-      currency:(o.currency||'CAD').trim().toUpperCase(),weight:parseFloat(o.target_weight)||0,addedDate:o.added_date};
-  }).filter(Boolean);
+  return rows.slice(1).filter(r=>r[0]).map(r=>{
+    const o={};h.forEach((k,i)=>o[k]=(r[i]||'').trim());
+    return{modelId:+o.model_id,ticker:o.ticker,name:o.name,
+      currency:(o.currency||'CAD').toUpperCase(),weight:parseFloat(o.target_weight)||0,
+      addedDate:o.added_date,sector:o.sector||'Other',geo:o.geo||'Other'};
+  });
 }
+
 function parsePairings(rows){
   if(rows.length<2)return[];
   const h=rows[0].map(x=>x.toLowerCase().replace(/[_\s]/g,''));
-  return rows.slice(1).map(r=>{
-    const o={};h.forEach((k,i)=>o[k]=r[i]||'');
-    const eKey=Object.keys(o).find(k=>k.includes('equity'));
-    const fKey=Object.keys(o).find(k=>k.includes('fixed'));
-    return{equityId:+(o[eKey]||0),fixedId:+(o[fKey]||0)};
+  return rows.slice(1).filter(r=>r[0]).map(r=>{
+    const o={};h.forEach((k,i)=>o[k]=(r[i]||'').trim());
+    const ek=Object.keys(o).find(k=>k.includes('equity'));
+    const fk=Object.keys(o).find(k=>k.includes('fixed'));
+    return{equityId:+(o[ek]||0),fixedId:+(o[fk]||0)};
   }).filter(x=>x.equityId&&x.fixedId);
 }
 
-async function loadSheet(){
+function parsePrices(rows){
+  // A=ticker, B=gf_price, C=manual_price, D=final_price, E=currency,
+  // F=purchase_price, G=prev_close, H=final_prev_close
+  const map={};
+  rows.slice(1).forEach(r=>{
+    const ticker=(r[0]||'').trim();
+    if(!ticker)return;
+    const finalPrice   = parseFloat(r[3]);
+    const currency     = (r[4]||'CAD').trim().toUpperCase();
+    const purchasePrice= parseFloat(r[5]);
+    const prevClose    = parseFloat(r[7]); // H = final_prev_close
+
+    if(ticker==='USDCAD'&&!isNaN(finalPrice)&&finalPrice>0){
+      usdcadRate=finalPrice; return;
+    }
+    if(!isNaN(finalPrice)&&finalPrice>0){
+      map[ticker]={
+        price:       finalPrice,
+        currency,
+        purchasePrice: (!isNaN(purchasePrice)&&purchasePrice>0) ? purchasePrice : null,
+        prevClose:     (!isNaN(prevClose)&&prevClose>0)         ? prevClose     : null,
+      };
+    }
+  });
+  return map;
+}
+
+async function loadAll(){
   setStatus('Reading Google Sheet…');
-  const [mR,hR,pR]=await Promise.all([
-    fetchSheetRange('Models!A1:F20'),
-    fetchSheetRange('Holdings!A1:G300'),
-    fetchSheetRange('Pairings!A1:C20'),
+  const [mR,hR,pR,prR]=await Promise.all([
+    fetchRange('Models!A1:F20'),
+    fetchRange('Holdings!A1:H300'),
+    fetchRange('Pairings!A1:C20'),
+    fetchRange('prices!A1:H50'),
   ]);
-  models=parseModels(mR);
-  holdings=parseHoldings(hR);
-  pairings=parsePairings(pR);
+  models   = parseModels(mR);
+  holdings = parseHoldings(hR);
+  pairings = parsePairings(pR);
+  priceMap = parsePrices(prR);
 }
 
-// ── PRICE FETCHING ───────────────────────────────────────────────────────────
-async function fetchYahoo(ticker){
-  // Try multiple CORS proxies in order
-  const proxies=[
-    url=>`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-    url=>`https://corsproxy.io/?${encodeURIComponent(url)}`,
-  ];
-  const yUrl=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1d&range=6mo`;
-  for(const makeProxy of proxies){
-    try{
-      const r=await fetch(makeProxy(yUrl),{signal:AbortSignal.timeout(10000)});
-      if(!r.ok)continue;
-      const j=await r.json();
-      const raw=typeof j.contents==='string'?JSON.parse(j.contents):j;
-      const res=(raw.chart||raw).result?.[0];
-      if(!res)continue;
-      const meta=res.meta;
-      const closes=res.indicators.quote[0].close;
-      const ts=res.timestamp;
-      const valid=closes.map((c,i)=>({c,t:ts[i]})).filter(x=>x.c!=null);
-      if(!valid.length)continue;
-      const current=meta.regularMarketPrice||valid[valid.length-1].c;
-      const prev=meta.chartPreviousClose||valid[valid.length-2]?.c||current;
-      const dayChg=((current-prev)/prev)*100;
-      const jan1=valid.find(x=>{const d=new Date(x.t*1000);return d>=new Date('2026-01-02')&&d<=new Date('2026-01-15');})?.c||valid[0].c;
-      const totalRet=((current-jan1)/jan1)*100;
-      const curve=valid.slice(-120).map(x=>({t:x.t,c:x.c}));
-      return{current,prev,dayChg,jan1,totalRet,curve};
-    }catch(e){continue;}
-  }
-  return null;
-}
-
-async function fetchUSDCAD(){
-  try{
-    const d=await fetchYahoo('CADUSD=X');
-    if(d&&d.current>0)usdcadRate=1/d.current;
-  }catch(e){}
-}
-
-async function fetchAllPrices(){
-  const tickers=[...new Set(holdings.map(h=>h.ticker))];
-  failed=[];
-  const BATCH=4;
-  for(let i=0;i<tickers.length;i+=BATCH){
-    const batch=tickers.slice(i,i+BATCH);
-    setStatus(`Fetching prices… (${Math.min(i+BATCH,tickers.length)}/${tickers.length})`);
-    await Promise.all(batch.map(async t=>{
-      if(priceData[t])return;
-      const d=await fetchYahoo(t);
-      if(d)priceData[t]=d;
-      else failed.push(t);
-    }));
-  }
-}
-
-// ── DATA HELPERS ─────────────────────────────────────────────────────────────
+// ── DATA HELPERS ──────────────────────────────────────────────────────────────
 function getActiveModel(){return models.find(m=>m.id===activeModelId)||models[0];}
-function getFixedModel(){const p=pairings.find(x=>x.equityId===activeModelId);return p?models.find(m=>m.id===p.fixedId):null;}
-
-function isEquityHolding(h){return models.find(m=>m.id===h.modelId)?.type==='equity';}
+function isEquityH(h){return models.find(m=>m.id===h.modelId)?.type==='equity';}
+function getFixedId(){return pairings.find(p=>p.equityId===activeModelId)?.fixedId||null;}
+function hasFixed(){return getActiveModel().type==='equity'&&!!pairings.find(p=>p.equityId===activeModelId);}
 
 function sleeveAUM(h){
   const m=getActiveModel();
   if(m.id===6)return SOLO_AUM;
-  return isEquityHolding(h)?EQUITY_AUM:FIXED_AUM;
+  return isEquityH(h)?EQUITY_AUM:FIXED_AUM;
+}
+
+// Sleeve weight factor: what fraction of the TOTAL paired portfolio does this sleeve represent?
+// Used when in pair view to scale individual holding weights correctly
+function sleeveWeightFactor(h){
+  if(!hasFixed()||activeSleeve!=='pair') return 1.0;
+  return isEquityH(h) ? EQUITY_WEIGHT : FIXED_WEIGHT;
+}
+
+function getPrice(ticker){
+  return priceMap[ticker]||priceMap[ticker.replace('.TO','')]||null;
 }
 
 function computeStats(h){
-  const p=priceData[h.ticker];if(!p)return null;
-  const sAUM=sleeveAUM(h);
-  const targetCAD=h.weight*sAUM;
-  const jan1CAD=toCad(p.jan1,h.currency);
-  const shares=jan1CAD>0?targetCAD/jan1CAD:0;
-  const currentCAD=toCad(p.current,h.currency);
-  const currentValCAD=shares*currentCAD;
-  const gainCAD=currentValCAD-targetCAD;
-  return{shares,targetCAD,currentValCAD,gainCAD,gainPct:p.totalRet,dayChg:p.dayChg,currentCAD,current:p.current};
+  const pd=getPrice(h.ticker);
+  if(!pd||!pd.price) return null;
+
+  const currentPriceCAD  = toCad(pd.price, h.currency);
+  const prevPriceCAD     = pd.prevClose ? toCad(pd.prevClose, h.currency) : null;
+  const purchasePriceCAD = pd.purchasePrice ? toCad(pd.purchasePrice, h.currency) : null;
+
+  // Day change: today vs yesterday's close
+  const dayChgPct = prevPriceCAD && prevPriceCAD>0
+    ? ((currentPriceCAD - prevPriceCAD) / prevPriceCAD) * 100
+    : null;
+
+  // Shares held: based on purchase price and target sleeve allocation
+  const targetCAD = h.weight * sleeveAUM(h);
+  const shares = purchasePriceCAD && purchasePriceCAD>0
+    ? targetCAD / purchasePriceCAD
+    : targetCAD / currentPriceCAD; // fallback: no gain if no purchase price
+
+  const currentValCAD = shares * currentPriceCAD;
+  const costBasisCAD  = purchasePriceCAD ? shares * purchasePriceCAD : currentValCAD;
+  const gainCAD       = currentValCAD - costBasisCAD;
+  const gainPct       = costBasisCAD>0 ? (gainCAD/costBasisCAD)*100 : 0;
+
+  // Day P&L in CAD
+  const dayPLCAD = prevPriceCAD ? shares*(currentPriceCAD-prevPriceCAD) : 0;
+
+  return{targetCAD,currentValCAD,costBasisCAD,gainCAD,gainPct,
+    dayChgPct,dayPLCAD,price:pd.price,currency:h.currency,shares};
+}
+
+// Target weight adjusted for pair view (e.g. 5% equity weight → 5% × 63% = 3.15% of total)
+function targetWeightInView(h){
+  if(hasFixed()&&activeSleeve==='pair'){
+    return h.weight * sleeveWeightFactor(h);
+  }
+  return h.weight;
 }
 
 function getDisplayHoldings(){
   const m=getActiveModel();
   const pair=pairings.find(p=>p.equityId===m.id);
-  const equityH=holdings.filter(h=>h.modelId===m.id);
-  const fixedH=pair?holdings.filter(h=>h.modelId===pair.fixedId):[];
+  const eq=holdings.filter(h=>h.modelId===m.id);
+  const fx=pair?holdings.filter(h=>h.modelId===pair.fixedId):[];
   if(m.type==='equity'&&pair){
-    if(activeSleeve==='equity')return equityH;
-    if(activeSleeve==='fixed')return fixedH;
-    return[...equityH,...fixedH];
+    if(activeSleeve==='equity') return eq;
+    if(activeSleeve==='fixed')  return fx;
+    return [...eq,...fx];
   }
-  return equityH;
+  return eq;
 }
 
-function getActiveHoldingsMeta(){
+function getTotalPortfolioValue(){
+  // Full portfolio value including cash
+  const dh=getDisplayHoldings();
+  const investedVal=dh.reduce((s,h)=>{const st=computeStats(h);return s+(st?st.currentValCAD:0);},0);
   const m=getActiveModel();
-  const pair=pairings.find(p=>p.equityId===m.id);
-  const hasFixed=m.type==='equity'&&pair;
-  return{hasFixed,mode:hasFixed?activeSleeve:'solo'};
+  const cash=m.id===6?SOLO_CASH:activeSleeve==='fixed'?0:CASH_EQUITY;
+  return investedVal+cash;
 }
 
-// ── RENDER: MODEL NAV ─────────────────────────────────────────────────────────
+// ── UI BUILDERS ───────────────────────────────────────────────────────────────
 function buildModelNav(){
-  const equityModels=models.filter(m=>m.type==='equity');
-  $('model-nav').innerHTML=equityModels.map(m=>{
+  gi('model-nav').innerHTML=models.filter(m=>m.type==='equity').map(m=>{
     const pair=pairings.find(p=>p.equityId===m.id);
-    const sub=pair?`+ Fixed/Alts`:`standalone`;
-    return`<button class="model-tab${m.id===activeModelId?' active':''}" onclick="switchModel(${m.id})">${m.name}<br><span style="font-size:9px;opacity:.5">${m.desc} · ${sub}</span></button>`;
+    return`<button class="model-tab${m.id===activeModelId?' active':''}" onclick="switchModel(${m.id})">
+      ${m.name}<br><span style="font-size:9px;opacity:.5">${m.desc}${pair?' · +Fixed':' · standalone'}</span>
+    </button>`;
   }).join('');
 }
 
 function buildSleeveTabs(){
-  const{hasFixed}=getActiveHoldingsMeta();
-  const el=$('sleeve-tabs');
-  if(!hasFixed){el.innerHTML='';return;}
+  const el=gi('sleeve-tabs');
+  if(!hasFixed()){el.innerHTML='';return;}
   el.innerHTML=[['pair','Pair (Equity + Fixed)'],['equity','Equity only'],['fixed','Fixed / Alts only']]
     .map(([v,l])=>`<button class="sleeve-tab${activeSleeve===v?' active':''}" onclick="setSleeve('${v}')">${l}</button>`).join('');
 }
@@ -356,22 +392,28 @@ function buildSleeveTabs(){
 // ── RENDER: METRICS ───────────────────────────────────────────────────────────
 function renderMetrics(){
   const dh=getDisplayHoldings();
-  let totalVal=0,totalCost=0,dayPL=0;
-  dh.forEach(h=>{const s=computeStats(h);if(!s)return;totalVal+=s.currentValCAD;totalCost+=s.targetCAD;dayPL+=s.currentValCAD*(s.dayChg/100);});
+  let totalVal=0,totalCost=0,totalDayPL=0;
+  dh.forEach(h=>{
+    const s=computeStats(h);if(!s)return;
+    totalVal  +=s.currentValCAD;
+    totalCost +=s.costBasisCAD;
+    totalDayPL+=s.dayPLCAD;
+  });
   const m=getActiveModel();
-  const{mode}=getActiveHoldingsMeta();
-  const cash=m.id===6?SOLO_CASH:mode==='fixed'?0:CASH_EQUITY;
+  const cash=m.id===6?SOLO_CASH:activeSleeve==='fixed'?0:CASH_EQUITY;
   totalVal+=cash;
-  const gain=totalVal-totalCost-cash;
-  const gainPct=totalCost>0?(gain/totalCost)*100:0;
-  const dayPct=totalVal>0?(dayPL/totalVal)*100:0;
-  $('metrics').innerHTML=[
-    {l:'portfolio value',v:'$'+fmt(totalVal)},
-    {l:'ytd gain / loss',v:fmtC(gain),s:fmtP(gainPct),pos:gain>=0},
-    {l:'day p&l',v:fmtC(dayPL),s:fmtP(dayPct),pos:dayPL>=0},
-    {l:'cash (CAD)',v:'$'+fmt(cash)},
-    {l:'usd / cad',v:usdcadRate.toFixed(4),s:'live rate'},
-  ].map(c=>`<div class="metric"><div class="metric-label">${c.l}</div>
+  const totalGain   =totalVal-totalCost-cash;
+  const totalGainPct=totalCost>0?(totalGain/totalCost)*100:0;
+  const dayPct      =totalVal>0?(totalDayPL/totalVal)*100:0;
+
+  gi('metrics').innerHTML=[
+    {l:'portfolio value',   v:'$'+fmt(totalVal)},
+    {l:'total return',      v:fmtC(totalGain),    s:fmtP(totalGainPct), pos:totalGain>=0},
+    {l:'day p&l',           v:fmtC(totalDayPL),   s:fmtP(dayPct),       pos:totalDayPL>=0},
+    {l:'cash (CAD)',         v:'$'+fmt(cash)},
+    {l:'usd / cad',         v:usdcadRate.toFixed(4), s:'via sheet'},
+  ].map(c=>`<div class="metric">
+    <div class="metric-label">${c.l}</div>
     <div class="metric-value${c.pos===true?' pos':c.pos===false?' neg':''}">${c.v}</div>
     ${c.s?`<div class="metric-sub${c.pos===true?' pos':c.pos===false?' neg':''}">${c.s}</div>`:''}</div>`).join('');
 }
@@ -379,104 +421,174 @@ function renderMetrics(){
 // ── RENDER: HOLDINGS TABLE ────────────────────────────────────────────────────
 function renderHoldings(){
   const dh=getDisplayHoldings();
-  const totalPort=dh.reduce((s,h)=>{const st=computeStats(h);return s+(st?st.currentValCAD:0);},0);
-  const{mode}=getActiveHoldingsMeta();
+  const totalPortVal=getTotalPortfolioValue();
   const m=getActiveModel();
-  $('holdings-title').textContent=`holdings — ${m.name}${mode==='pair'?' (equity + fixed)':mode==='fixed'?' (fixed/alts)':''}`;
-  $('holdings-body').innerHTML=dh.map(h=>{
-    const s=computeStats(h);const p=priceData[h.ticker];
-    if(!s||!p)return`<tr><td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td><td colspan="7" class="muted" style="font-size:11px">price unavailable</td></tr>`;
-    const currWt=totalPort>0?s.currentValCAD/totalPort:h.weight;
-    const drift=currWt-h.weight;
-    const barW=Math.min(48,Math.abs(drift)*600);
-    const barCol=Math.abs(drift)<0.008?'#3dd68c':drift>0?'#4a9eff':'#ff6b6b';
-    return`<tr>
+  const sleeve=activeSleeve==='pair'?' (equity + fixed)':activeSleeve==='fixed'?' (fixed/alts)':'';
+  gi('holdings-title').textContent=`holdings — ${m.name}${sleeve}`;
+
+  // In pair view, add sleeve dividers
+  const isPair=hasFixed()&&activeSleeve==='pair';
+  const fixedId=getFixedId();
+
+  let rows='';
+  let lastIsEquity=null;
+
+  dh.forEach(h=>{
+    const isEq=isEquityH(h);
+
+    // Insert sleeve divider row in pair view
+    if(isPair&&lastIsEquity!==null&&isEq!==lastIsEquity){
+      rows+=`<tr><td colspan="8" class="sleeve-label">fixed / alts sleeve (${(FIXED_WEIGHT*100).toFixed(0)}% of portfolio)</td></tr>`;
+    }
+    if(isPair&&lastIsEquity===null&&isEq){
+      rows+=`<tr><td colspan="8" class="sleeve-label">equity sleeve (${(EQUITY_WEIGHT*100).toFixed(0)}% of portfolio)</td></tr>`;
+    }
+    lastIsEquity=isEq;
+
+    const s=computeStats(h);
+    if(!s){
+      rows+=`<tr><td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td><td colspan="7" class="muted" style="font-size:11px">no price in sheet</td></tr>`;
+      return;
+    }
+
+    // Target weight: in pair view, scale by sleeve factor
+    const targetWt = targetWeightInView(h);
+    // Current weight: always as % of total portfolio value
+    const currWt = totalPortVal>0 ? s.currentValCAD/totalPortVal : targetWt;
+    const drift  = currWt - targetWt;
+    const barW   = Math.min(48,Math.abs(drift)*800);
+    const barCol = Math.abs(drift)<0.005?'#3dd68c':drift>0?'#4a9eff':'#ff6b6b';
+
+    const dayStr = s.dayChgPct!=null
+      ? `<span class="${s.dayChgPct>=0?'pos':'neg'}">${fmtP(s.dayChgPct)}</span>`
+      : `<span class="muted">—</span>`;
+
+    rows+=`<tr>
       <td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td>
-      <td>${h.currency==='USD'?'US$':'C$'}${fmt(p.current,2)}</td>
-      <td class="${p.dayChg>=0?'pos':'neg'}">${fmtP(p.dayChg)}</td>
-      <td class="muted">${(h.weight*100).toFixed(1)}%</td>
-      <td>${(currWt*100).toFixed(1)}%</td>
-      <td><span class="${drift>=0?'pos':'neg'}" style="font-size:10px">${drift>=0?'+':''}${(drift*100).toFixed(1)}%</span> <div class="drift-bar"><div class="drift-fill" style="width:${barW}px;background:${barCol}"></div></div></td>
+      <td>${h.currency==='USD'?'US$':'C$'}${fmt(s.price,2)}</td>
+      <td>${dayStr}</td>
+      <td class="muted">${(targetWt*100).toFixed(2)}%</td>
+      <td>${(currWt*100).toFixed(2)}%</td>
+      <td>
+        <span class="${drift>=0?'pos':'neg'}" style="font-size:10px">${drift>=0?'+':''}${(drift*100).toFixed(2)}%</span>
+        <div class="drift-bar"><div class="drift-fill" style="width:${barW}px;background:${barCol}"></div></div>
+      </td>
       <td>$${fmt(s.currentValCAD)}</td>
       <td class="${s.gainCAD>=0?'pos':'neg'}">${fmtC(s.gainCAD)} <span style="opacity:.6;font-size:10px">${fmtP(s.gainPct)}</span></td>
     </tr>`;
-  }).join('');
-}
-
-// ── RENDER: PERF CHART ────────────────────────────────────────────────────────
-function renderPerfChart(){
-  const dh=getDisplayHoldings();
-  const curves=dh.map(h=>{
-    const p=priceData[h.ticker];if(!p||!p.curve)return null;
-    const sAUM=sleeveAUM(h);
-    const shares=(h.weight*sAUM)/toCad(p.jan1,h.currency);
-    return p.curve.map(pt=>({t:pt.t,v:shares*toCad(pt.c,h.currency)}));
-  }).filter(Boolean);
-  if(!curves.length)return;
-  const minLen=Math.min(...curves.map(c=>c.length));
-  const labels=[],vals=[];
-  for(let i=0;i<minLen;i++){
-    labels.push(new Date(curves[0][i].t*1000).toLocaleDateString('en-CA',{month:'short',day:'numeric'}));
-    vals.push(+curves.reduce((s,c)=>s+(c[i]?.v||0),0).toFixed(2));
-  }
-  destroyChart('perf');
-  charts.perf=new Chart($('perf-chart'),{
-    type:'line',
-    data:{labels,datasets:[{label:'Value',data:vals,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,0.08)',fill:true,tension:0.4,pointRadius:0,borderWidth:2}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{ticks:{color:'#555c66',maxRotation:0,maxTicksLimit:7,font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
-              y:{ticks:{color:'#555c66',font:{size:10},callback:v=>'$'+fmt(v)},grid:{color:'rgba(255,255,255,0.04)'}}}}
   });
+
+  gi('holdings-body').innerHTML=rows;
 }
 
-// ── RENDER: DONUT CHARTS ──────────────────────────────────────────────────────
-function groupBy(arr,key){
+// ── RENDER: CHARTS ────────────────────────────────────────────────────────────
+function groupBy(arr,keyFn){
   const m={};
-  arr.forEach(h=>{const s=computeStats(h);if(!s)return;const k=h[key]||'Other';m[k]=(m[k]||0)+s.currentValCAD;});
+  arr.forEach(h=>{
+    const s=computeStats(h);if(!s)return;
+    const k=keyFn(h)||'Other';
+    m[k]=(m[k]||0)+s.currentValCAD;
+  });
   return m;
 }
-function makeDonut(canvasId,legendId,dataMap){
-  const labels=Object.keys(dataMap),vals=labels.map(k=>+dataMap[k].toFixed(2));
+
+function makeDonut(canvasId,legendId,dataMap,cutout='62%'){
+  const labels=Object.keys(dataMap);
+  const vals=labels.map(k=>+dataMap[k].toFixed(2));
   const total=vals.reduce((a,b)=>a+b,0);
   const colors=COLORS.slice(0,labels.length);
-  const leg=$(legendId);
+  const leg=gi(legendId);
   if(leg)leg.innerHTML=labels.map((l,i)=>`<div class="legend-item"><span class="legend-sq" style="background:${colors[i]}"></span>${l} ${((vals[i]/total)*100).toFixed(1)}%</div>`).join('');
-  return{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:0,hoverOffset:4}]};
+  destroyChart(canvasId);
+  charts[canvasId]=new Chart(gi(canvasId),{
+    type:'doughnut',
+    data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout}
+  });
 }
+
 function renderAllocChart(){
   const dh=getDisplayHoldings();
-  const dm=allocView==='sector'?groupBy(dh,'sector'):allocView==='geo'?groupBy(dh,'geo'):allocView==='currency'?groupBy(dh,'currency'):(()=>{const m={};dh.forEach(h=>{const s=computeStats(h);if(s)m[h.ticker.replace('.TO','')]=s.currentValCAD;});return m;})();
-  destroyChart('alloc');
-  charts.alloc=new Chart($('alloc-chart'),{type:'doughnut',data:makeDonut('alloc-chart','alloc-legend',dm),options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'62%'}});
+  let dm;
+  if(allocView==='sector')      dm=groupBy(dh,h=>h.sector);
+  else if(allocView==='geo')    dm=groupBy(dh,h=>h.geo);
+  else if(allocView==='currency') dm=groupBy(dh,h=>h.currency);
+  else dm=groupBy(dh,h=>h.ticker.replace('.TO',''));
+  makeDonut('alloc-chart','alloc-legend',dm,'62%');
 }
+
+function renderSleeveChart(){
+  const m=getActiveModel();
+  const pair=pairings.find(p=>p.equityId===m.id);
+  const eqH=holdings.filter(h=>h.modelId===m.id);
+  const fxH=pair?holdings.filter(h=>h.modelId===pair.fixedId):[];
+  const eqVal=eqH.reduce((s,h)=>{const st=computeStats(h);return s+(st?st.currentValCAD:0);},0);
+  const fxVal=fxH.reduce((s,h)=>{const st=computeStats(h);return s+(st?st.currentValCAD:0);},0);
+  const cash=m.id===6?SOLO_CASH:CASH_EQUITY;
+  const dm={};
+  if(eqVal>0)dm['Equity']=eqVal;
+  if(fxVal>0)dm['Fixed/Alts']=fxVal;
+  if(cash>0) dm['Cash']=cash;
+  makeDonut('sleeve-chart','sleeve-legend',dm,'58%');
+}
+
 function renderBreakdowns(){
   const dh=getDisplayHoldings();
-  [['sector','sector'],['geo','geo'],['currency','curr']].forEach(([key,id])=>{
-    destroyChart(id);
-    charts[id]=new Chart($(`${id}-chart`),{type:'doughnut',data:makeDonut(`${id}-chart`,`${id}-legend`,groupBy(dh,key)),options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'58%'}});
-  });
+  makeDonut('sector-chart','sector-legend',groupBy(dh,h=>h.sector),'58%');
+  makeDonut('geo-chart',   'geo-legend',   groupBy(dh,h=>h.geo),   '58%');
+  makeDonut('curr-chart',  'curr-legend',  groupBy(dh,h=>h.currency),'58%');
 }
 
 // ── RENDER: REBALANCE ─────────────────────────────────────────────────────────
 function renderRebal(){
   const dh=getDisplayHoldings();
-  $('rebal-content').innerHTML=dh.map(h=>{
-    const s=computeStats(h);const p=priceData[h.ticker];
-    if(!s||!p)return'';
-    const diff=s.targetCAD-s.currentValCAD;
-    if(Math.abs(diff)<300)return`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:500;font-family:var(--mono)">${h.ticker.replace('.TO','')}</span><span style="font-size:10px;color:var(--text3)">${h.name}</span></div><span class="pill hold">hold</span></div>`;
+  const totalPortVal=getTotalPortfolioValue();
+  const isPair=hasFixed()&&activeSleeve==='pair';
+  let rows='',lastIsEquity=null;
+
+  dh.forEach(h=>{
+    const isEq=isEquityH(h);
+    if(isPair&&lastIsEquity!==null&&isEq!==lastIsEquity){
+      rows+=`<div style="font-size:9px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:4px">fixed / alts sleeve</div>`;
+    }
+    if(isPair&&lastIsEquity===null&&isEq){
+      rows+=`<div style="font-size:9px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:4px 0">equity sleeve</div>`;
+    }
+    lastIsEquity=isEq;
+
+    const s=computeStats(h);
+    if(!s){
+      rows+=`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:500;font-family:var(--mono)">${h.ticker.replace('.TO','')}</span><span style="font-size:10px;color:var(--text3)">${h.name}</span></div><span class="muted" style="font-size:11px">no price</span></div>`;
+      return;
+    }
+
+    // Target value in the context of the current view
+    const targetWt=targetWeightInView(h);
+    const targetVal=targetWt*totalPortVal;
+    const diff=targetVal-s.currentValCAD;
+
+    if(Math.abs(diff)<300){
+      rows+=`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:500;font-family:var(--mono)">${h.ticker.replace('.TO','')}</span><span style="font-size:10px;color:var(--text3)">${h.name}</span></div><span class="pill hold">hold</span></div>`;
+      return;
+    }
     const action=diff>0?'buy':'sell';
-    const diffShares=Math.abs(diff)/toCad(p.current,h.currency);
-    return`<div class="rebal-row">
+    const diffShares=Math.abs(diff)/toCad(s.price,h.currency);
+    rows+=`<div class="rebal-row">
       <div class="rebal-left"><span style="font-size:12px;font-weight:500;font-family:var(--mono)">${h.ticker.replace('.TO','')}</span><span style="font-size:10px;color:var(--text3)">${h.name}</span></div>
       <div class="rebal-right"><span class="rebal-amount">${action==='buy'?'+':'−'}${diffShares.toFixed(2)} shares</span><span class="rebal-amount">${fmtC(Math.abs(diff))}</span><span class="pill ${action}">${action}</span></div>
     </div>`;
-  }).join('')||'<p style="font-size:12px;color:var(--text3);padding:8px 0">All positions within tolerance — no trades needed.</p>';
+  });
+
+  gi('rebal-content').innerHTML=rows||'<p style="font-size:12px;color:var(--text3);padding:8px 0">All positions within tolerance.</p>';
 }
 
 // ── RENDER ALL ────────────────────────────────────────────────────────────────
 function renderAll(){
-  renderMetrics();renderHoldings();renderPerfChart();renderAllocChart();renderBreakdowns();
+  renderMetrics();
+  renderHoldings();
+  renderAllocChart();
+  renderSleeveChart();
+  renderBreakdowns();
   if(rebalOpen)renderRebal();
 }
 
@@ -485,50 +597,47 @@ function switchModel(id){activeModelId=id;activeSleeve='pair';buildModelNav();bu
 function setSleeve(v){activeSleeve=v;buildSleeveTabs();renderAll();}
 function setAllocView(v){
   allocView=v;
-  document.querySelectorAll('.vtab').forEach(t=>t.classList.toggle('active',
-    (v==='weight'&&t.textContent==='weight')||(v==='sector'&&t.textContent==='sector')||
-    (v==='geo'&&t.textContent==='geography')||(v==='currency'&&t.textContent==='currency')));
+  document.querySelectorAll('.vtab').forEach(t=>{
+    const txt=t.textContent.trim();
+    t.classList.toggle('active',
+      (v==='weight'&&txt==='weight')||(v==='sector'&&txt==='sector')||
+      (v==='geo'&&txt==='geography')||(v==='currency'&&txt==='currency'));
+  });
   renderAllocChart();
 }
-function toggleRebal(){rebalOpen=!rebalOpen;$('rebal-section').style.display=rebalOpen?'block':'none';if(rebalOpen)renderRebal();}
-
-function showWarnings(){
-  $('err-area').innerHTML=failed.length?`<div class="warn-banner">⚠ Price unavailable for: ${failed.join(', ')} — check tickers in your sheet (Canadian stocks need .TO suffix)</div>`:'';
+function toggleRebal(){
+  rebalOpen=!rebalOpen;
+  gi('rebal-section').style.display=rebalOpen?'block':'none';
+  if(rebalOpen)renderRebal();
 }
 
 async function refreshAll(){
-  priceData={};showMain(false);showStatus(true);
+  showMain(false);showStatus(true);gi('err-area').innerHTML='';
   try{
-    await fetchUSDCAD();await fetchAllPrices();showWarnings();
-    buildModelNav();buildSleeveTabs();showStatus(false);showMain(true);renderAll();
-    $('updated-time').textContent='updated '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
-    $('footnote').textContent=`Live prices via Yahoo Finance · USD/CAD ${usdcadRate.toFixed(4)} · Cost basis: Jan 1 2026 · ${new Date().toLocaleDateString('en-CA')}`;
-  }catch(e){showStatus(false);$('err-area').innerHTML=`<div class="err-banner">Error refreshing prices: ${e.message}</div>`;}
+    await loadAll();
+    buildModelNav();buildSleeveTabs();
+    showStatus(false);showMain(true);renderAll();
+    gi('updated-time').textContent='updated '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
+    gi('footnote').textContent=`Prices via Google Finance · USD/CAD ${usdcadRate.toFixed(4)} · ${new Date().toLocaleDateString('en-CA')}`;
+  }catch(e){
+    showStatus(false);
+    gi('err-area').innerHTML=`<div class="err-banner">Error: ${e.message}</div>`;
+  }
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
 async function init(){
   showStatus(true);
   try{
-    await loadSheet();
-    if(!models.length)throw new Error('No models found — check sheet tab is named "Models" (capital M)');
-    await fetchUSDCAD();
-    await fetchAllPrices();
-    showWarnings();
+    await loadAll();
+    if(!models.length)throw new Error('No models found — check sheet tab is named "Models"');
     activeModelId=models.find(m=>m.type==='equity')?.id||models[0].id;
-    buildModelNav();buildSleeveTabs();showStatus(false);showMain(true);renderAll();
-    $('updated-time').textContent='updated '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
-    $('footnote').textContent=`Live prices via Yahoo Finance · USD/CAD ${usdcadRate.toFixed(4)} · Cost basis: Jan 1 2026 · ${new Date().toLocaleDateString('en-CA')}`;
+    buildModelNav();buildSleeveTabs();
+    showStatus(false);showMain(true);renderAll();
+    gi('updated-time').textContent='updated '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
+    gi('footnote').textContent=`Prices via Google Finance · USD/CAD ${usdcadRate.toFixed(4)} · ${new Date().toLocaleDateString('en-CA')}`;
   }catch(e){
     showStatus(false);
-    $('err-area').innerHTML=`<div class="err-banner">
-      ⚠ Failed to load: ${e.message}<br><br>
-      To fix this, open the file from a local web server instead of double-clicking it:<br>
-      1. Open Terminal (Mac) or Command Prompt (Windows)<br>
-      2. Navigate to the folder containing portfolio-tracker.html<br>
-      3. Run: <strong>python3 -m http.server 8080</strong><br>
-      4. Open Chrome and go to: <strong>http://localhost:8080/portfolio-tracker.html</strong>
-    </div>`;
+    gi('err-area').innerHTML=`<div class="err-banner">Failed to load: ${e.message}</div>`;
   }
 }
 init();
