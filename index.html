@@ -248,26 +248,38 @@ function parsePairings(rows){
 }
 
 function parsePrices(rows){
-  // A=ticker, B=gf_price, C=manual_price, D=final_price, E=currency,
+  // A=ticker, B=gf_price, C=manual_price, D=final_price(manual only), E=currency,
   // F=purchase_price, G=prev_close, H=final_prev_close
+  // Priority: C (manual) > B (google finance). D only used for RCDB/RPLS type overrides.
   const map={};
   rows.slice(1).forEach(r=>{
-    const ticker=(r[0]||'').trim();
-    if(!ticker)return;
-    const finalPrice   = parseFloat(r[3]);
+    const ticker       = (r[0]||'').trim();
+    if(!ticker) return;
+    const gfPrice      = parseFloat(r[1]);   // B = google finance price
+    const manualPrice  = parseFloat(r[2]);   // C = manual price override
+    const finalPrice   = parseFloat(r[3]);   // D = final_price (manual overrides only)
     const currency     = (r[4]||'CAD').trim().toUpperCase();
-    const purchasePrice= parseFloat(r[5]);
-    const prevClose    = parseFloat(r[7]); // H = final_prev_close
+    const purchasePrice= parseFloat(r[5]);   // F = purchase_price
+    const prevClose    = parseFloat(r[7]);   // H = final_prev_close
 
-    if(ticker==='USDCAD'&&!isNaN(finalPrice)&&finalPrice>0){
-      usdcadRate=finalPrice; return;
+    // Pick best available price: manual (C) > google finance (B) > final_price (D)
+    const price = (!isNaN(manualPrice) && manualPrice>0) ? manualPrice
+                : (!isNaN(gfPrice)     && gfPrice>0)     ? gfPrice
+                : (!isNaN(finalPrice)  && finalPrice>0)  ? finalPrice
+                : null;
+
+    // Pick best prev close: H > G fallback already handled in sheet, use H first then B
+    const prev = (!isNaN(prevClose) && prevClose>0) ? prevClose : null;
+
+    if(ticker==='USDCAD' && price){
+      usdcadRate = price; return;
     }
-    if(!isNaN(finalPrice)&&finalPrice>0){
+    if(price){
       map[ticker]={
-        price:       finalPrice,
+        price,
         currency,
-        purchasePrice: (!isNaN(purchasePrice)&&purchasePrice>0) ? purchasePrice : null,
-        prevClose:     (!isNaN(prevClose)&&prevClose>0)         ? prevClose     : null,
+        purchasePrice: (!isNaN(purchasePrice) && purchasePrice>0) ? purchasePrice : null,
+        prevClose:     prev,
       };
     }
   });
