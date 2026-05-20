@@ -27,11 +27,13 @@
   .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;animation:pulse 2s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
   .last-updated{font-size:11px;color:var(--text3);font-family:var(--mono)}
-  .header-right{display:flex;gap:8px;align-items:center}
+  .header-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .btn{font-family:var(--sans);font-size:12px;padding:7px 14px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--bg3);cursor:pointer;color:var(--text2);display:inline-flex;align-items:center;gap:6px;transition:all .15s}
   .btn:hover{background:var(--bg4);color:var(--text)}
   .btn.accent{background:var(--blue-dim);color:var(--blue);border-color:rgba(74,158,255,0.25)}
   .btn.accent:hover{background:rgba(74,158,255,0.2)}
+  .btn.amber{background:var(--amber-dim);color:var(--amber);border-color:rgba(245,166,35,0.25)}
+  .btn.amber:hover{background:rgba(245,166,35,0.2)}
   .model-nav{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
   .model-tab{font-family:var(--mono);font-size:11px;padding:6px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg2);cursor:pointer;color:var(--text3);transition:all .15s;text-align:center;line-height:1.4}
   .model-tab:hover{color:var(--text2);border-color:var(--border2)}
@@ -54,12 +56,13 @@
   .ch{position:relative;width:100%}
   .tbl-wrap{overflow-x:auto}
   table{width:100%;border-collapse:collapse;font-size:12px}
-  th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);font-weight:400;padding:8px 10px;border-bottom:1px solid var(--border);text-align:right}
+  th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);font-weight:400;padding:8px 10px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
   th:first-child{text-align:left}
   td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);text-align:right;font-family:var(--mono);font-size:12px}
   td:first-child{text-align:left;font-family:var(--sans)}
   tr:last-child td{border-bottom:none}
   tr:hover td{background:var(--bg3)}
+  tr.news-open td{background:var(--bg3)}
   .tk{font-weight:500;font-size:12px;color:var(--text)}
   .tk-name{font-size:10px;color:var(--text3);margin-top:1px;font-family:var(--sans)}
   .pos{color:var(--green)}.neg{color:var(--red)}.muted{color:var(--text3)}
@@ -84,12 +87,37 @@
   .spinner{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
   @keyframes spin{to{transform:rotate(360deg)}}
   .err-banner{background:var(--red-dim);border:1px solid rgba(255,107,107,0.2);border-radius:var(--radius);padding:12px 16px;font-size:12px;color:var(--red);margin-bottom:12px;font-family:var(--mono);line-height:1.8}
-  .warn-banner{background:var(--amber-dim);border:1px solid rgba(245,166,35,0.2);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--amber);margin-bottom:12px;font-family:var(--mono)}
   .footnote{font-size:10px;color:var(--text3);font-family:var(--mono);text-align:center;padding:16px 0 4px}
   .sort-icon{font-size:9px;color:var(--text3);margin-left:2px}
   th:hover .sort-icon{color:var(--text2)}
   .mb{margin-bottom:12px}
   .sleeve-label{font-size:9px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:6px 0 4px;border-bottom:1px solid var(--border);margin-bottom:2px}
+
+  /* ALLOCATION EDITOR */
+  .alloc-editor{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:12px}
+  .alloc-editor-title{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);font-family:var(--mono);margin-bottom:12px}
+  .alloc-inputs{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+  .alloc-field{display:flex;flex-direction:column;gap:4px}
+  .alloc-field label{font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+  .alloc-field input{width:80px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:6px 10px;font-family:var(--mono);font-size:13px;color:var(--text);text-align:right;outline:none}
+  .alloc-field input:focus{border-color:var(--blue)}
+  .alloc-field input.err{border-color:var(--red)}
+  .alloc-total{font-family:var(--mono);font-size:12px;padding:6px 10px;border-radius:var(--radius);background:var(--bg4)}
+  .alloc-total.ok{color:var(--green)}
+  .alloc-total.bad{color:var(--red)}
+  .alloc-actions{display:flex;gap:8px;margin-left:auto;align-items:flex-end}
+
+  /* NEWS PANEL */
+  .news-row td{padding:0!important;border-bottom:1px solid var(--border)}
+  .news-panel{padding:14px 16px;background:var(--bg3)}
+  .news-panel-inner{max-width:700px}
+  .news-loading{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);font-family:var(--mono)}
+  .news-summary{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px}
+  .news-headlines{display:flex;flex-direction:column;gap:6px}
+  .news-headline{font-size:11px;color:var(--text3);font-family:var(--mono);padding:5px 8px;background:var(--bg4);border-radius:6px;border-left:2px solid var(--blue)}
+  .news-click-hint{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+  .clickable-row{cursor:pointer}
+  .clickable-row:hover .tk{color:var(--blue)}
 </style>
 </head>
 <body>
@@ -100,8 +128,9 @@
       <div class="last-updated"><span class="live-dot"></span><span id="updated-time">loading…</span></div>
     </div>
     <div class="header-right">
-      <button class="btn" onclick="refreshAll()">↻ refresh</button>
-      <button class="btn accent" onclick="toggleRebal()">⊞ rebalance</button>
+      <button class="btn" onclick="refreshAll()">&#8635; refresh</button>
+      <button class="btn amber" onclick="toggleAllocEditor()">&#9881; allocations</button>
+      <button class="btn accent" onclick="toggleRebal()">&#8862; rebalance</button>
     </div>
   </div>
 
@@ -111,6 +140,34 @@
   <div id="status-area" class="status"><div class="spinner"></div><span id="status-msg">Loading…</span></div>
 
   <div id="main" style="display:none">
+
+    <!-- ALLOCATION EDITOR -->
+    <div id="alloc-editor" class="alloc-editor mb" style="display:none">
+      <div class="alloc-editor-title">&#9881; allocation editor — adjust sleeve weights and recalculate</div>
+      <div class="alloc-inputs">
+        <div class="alloc-field">
+          <label>Equity %</label>
+          <input type="number" id="inp-equity" min="0" max="100" step="1" value="63" oninput="onAllocInput('equity')">
+        </div>
+        <div class="alloc-field">
+          <label>Fixed %</label>
+          <input type="number" id="inp-fixed" min="0" max="100" step="1" value="35" oninput="onAllocInput('fixed')">
+        </div>
+        <div class="alloc-field">
+          <label>Cash %</label>
+          <input type="number" id="inp-cash" min="0" max="100" step="1" value="2" oninput="onAllocInput('cash')">
+        </div>
+        <div class="alloc-field">
+          <label>Total</label>
+          <div class="alloc-total ok" id="alloc-total">100%</div>
+        </div>
+        <div class="alloc-actions">
+          <button class="btn" onclick="resetAlloc()">reset to default</button>
+          <button class="btn accent" onclick="applyAlloc()">apply</button>
+        </div>
+      </div>
+    </div>
+
     <div class="metrics" id="metrics"></div>
 
     <div class="grid-2 mb">
@@ -133,12 +190,13 @@
     </div>
 
     <div id="rebal-section" style="display:none" class="card mb">
-      <div class="card-title">⊞ rebalance — trades needed to restore target weights</div>
+      <div class="card-title">&#8862; rebalance — trades needed to restore target weights</div>
       <div id="rebal-content"></div>
     </div>
 
     <div class="card mb">
       <div class="card-title" id="holdings-title">holdings</div>
+      <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:8px">&#9432; click any row to load AI news summary</div>
       <div class="tbl-wrap">
         <table id="holdings-tbl">
           <thead><tr>
@@ -180,28 +238,24 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────────────────
 const SHEET_ID    = '1Is6Klorkyyy2F-TKLFKentZuP00Rn0OlCwLpbyf7tAY';
 const API_KEY     = 'AIzaSyDIXN_Bj8fWRydDxEoNfVsMezvvhcXN0iQ';
-const EQUITY_AUM  = 630000;  // equity sleeve of paired portfolio
-const FIXED_AUM   = 350000;  // fixed sleeve of paired portfolio
-const CASH_EQUITY = 20000;   // cash in paired portfolio
-const SOLO_AUM    = 198000;  // portfolio 6 equity sleeve
-const SOLO_CASH   = 2000;    // portfolio 6 cash
-// Sleeve weights within the full $1M paired portfolio
-const EQUITY_WEIGHT = 0.63;
-const FIXED_WEIGHT  = 0.35;
-const CASH_WEIGHT   = 0.02;
-
+const ANTHROPIC_KEY = 'YOUR_ANTHROPIC_KEY'; // Not needed — handled server-side via proxy
+const TOTAL_AUM   = 1000000;
+const SOLO_AUM    = 198000;
+const SOLO_CASH   = 2000;
 const COLORS = ['#4a9eff','#3dd68c','#f5a623','#ff6b6b','#c084fc','#fb923c','#34d399','#60a5fa','#f472b6','#a78bfa','#fbbf24','#4ade80','#f87171','#38bdf8','#818cf8','#e879f9'];
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
+// Dynamic allocation weights — default 63/35/2
+let allocWeights = { equity: 0.63, fixed: 0.35, cash: 0.02 };
+
 let models=[], holdings=[], pairings=[], priceMap={};
 let usdcadRate=1.363;
 let activeModelId=1, activeSleeve='pair', allocView='weight';
-let charts={}, rebalOpen=false;
+let charts={}, rebalOpen=false, allocEditorOpen=false;
+let newsCache={}, openNewsRow=null;
+let sortCol=-1, sortAsc=true;
 
-// ── UTILITIES ─────────────────────────────────────────────────────────────────
 function gi(id){return document.getElementById(id);}
 function setStatus(m){gi('status-msg').textContent=m;}
 function showStatus(v){gi('status-area').style.display=v?'flex':'none';}
@@ -212,7 +266,11 @@ function fmtP(n){return(n>=0?'+':'')+n.toFixed(2)+'%';}
 function toCad(val,cur){return cur==='USD'?val*usdcadRate:val;}
 function destroyChart(k){if(charts[k]){charts[k].destroy();delete charts[k];}}
 
-// ── SHEET FETCHING ────────────────────────────────────────────────────────────
+// Derived AUM values from dynamic weights
+function equityAUM(){ return TOTAL_AUM * allocWeights.equity; }
+function fixedAUM(){  return TOTAL_AUM * allocWeights.fixed;  }
+function cashAUM(){   return TOTAL_AUM * allocWeights.cash;   }
+
 async function fetchRange(range){
   const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
   const r=await fetch(url);
@@ -233,9 +291,8 @@ function parseHoldings(rows){
   const h=rows[0].map(x=>x.toLowerCase().trim());
   return rows.slice(1).filter(r=>r[0]).map(r=>{
     const o={};h.forEach((k,i)=>o[k]=(r[i]||'').trim());
-    // sector = col G (index 6), geo = col H (index 7) — read directly by index as fallback
-    const sector = o.sector || r[6] || 'Other';
-    const geo    = o.geo    || r[7] || 'Other';
+    const sector=o.sector||r[6]||'Other';
+    const geo=o.geo||r[7]||'Other';
     return{modelId:+o.model_id,ticker:o.ticker,name:o.name,
       currency:(o.currency||'CAD').toUpperCase(),weight:parseFloat(o.target_weight)||0,
       addedDate:o.added_date,sector,geo};
@@ -254,41 +311,20 @@ function parsePairings(rows){
 }
 
 function parsePrices(rows){
-  // A=ticker, B=gf_price, C=manual_price, D=final_price(manual only), E=currency,
-  // F=purchase_price, G=prev_close, H=final_prev_close
-  // Priority: C (manual) > B (google finance). D only used for RCDB/RPLS type overrides.
   const map={};
   rows.slice(1).forEach(r=>{
-    const ticker       = (r[0]||'').trim();
-    if(!ticker) return;
-    const gfPrice      = parseFloat(r[1]);   // B = google finance price
-    const manualPrice  = parseFloat(r[2]);   // C = manual price override
-    const finalPrice   = parseFloat(r[3]);   // D = final_price (manual overrides only)
-    const currency     = (r[4]||'CAD').trim().toUpperCase();
-    const purchasePrice= parseFloat(r[5]);   // F = purchase_price
-    const prevCloseG   = parseFloat(r[6]);
-    const prevCloseH   = parseFloat(r[7]);
-
-    const price = (!isNaN(manualPrice) && manualPrice>0) ? manualPrice
-                : (!isNaN(gfPrice)     && gfPrice>0)     ? gfPrice
-                : (!isNaN(finalPrice)  && finalPrice>0)  ? finalPrice
-                : null;
-
-    const prev = (!isNaN(prevCloseH) && prevCloseH>0) ? prevCloseH
-               : (!isNaN(prevCloseG) && prevCloseG>0) ? prevCloseG
-               : null;
-
-    if(ticker==='USDCAD' && price){
-      usdcadRate = price; return;
-    }
-    if(price){
-      map[ticker]={
-        price,
-        currency,
-        purchasePrice: (!isNaN(purchasePrice) && purchasePrice>0) ? purchasePrice : null,
-        prevClose:     prev,
-      };
-    }
+    const ticker=(r[0]||'').trim(); if(!ticker)return;
+    const gfPrice=parseFloat(r[1]);
+    const manualPrice=parseFloat(r[2]);
+    const finalPrice=parseFloat(r[3]);
+    const currency=(r[4]||'CAD').trim().toUpperCase();
+    const purchasePrice=parseFloat(r[5]);
+    const prevCloseG=parseFloat(r[6]);
+    const prevCloseH=parseFloat(r[7]);
+    const price=(!isNaN(manualPrice)&&manualPrice>0)?manualPrice:(!isNaN(gfPrice)&&gfPrice>0)?gfPrice:(!isNaN(finalPrice)&&finalPrice>0)?finalPrice:null;
+    const prev=(!isNaN(prevCloseH)&&prevCloseH>0)?prevCloseH:(!isNaN(prevCloseG)&&prevCloseG>0)?prevCloseG:null;
+    if(ticker==='USDCAD'&&price){usdcadRate=price;return;}
+    if(price){map[ticker]={price,currency,purchasePrice:(!isNaN(purchasePrice)&&purchasePrice>0)?purchasePrice:null,prevClose:prev};}
   });
   return map;
 }
@@ -301,13 +337,12 @@ async function loadAll(){
     fetchRange('Pairings!A1:C20'),
     fetchRange('Prices!A1:H50'),
   ]);
-  models   = parseModels(mR);
-  holdings = parseHoldings(hR);
-  pairings = parsePairings(pR);
-  priceMap = parsePrices(prR);
+  models=parseModels(mR);
+  holdings=parseHoldings(hR);
+  pairings=parsePairings(pR);
+  priceMap=parsePrices(prR);
 }
 
-// ── DATA HELPERS ──────────────────────────────────────────────────────────────
 function getActiveModel(){return models.find(m=>m.id===activeModelId)||models[0];}
 function isEquityH(h){return models.find(m=>m.id===h.modelId)?.type==='equity';}
 function getFixedId(){return pairings.find(p=>p.equityId===activeModelId)?.fixedId||null;}
@@ -316,56 +351,34 @@ function hasFixed(){return getActiveModel().type==='equity'&&!!pairings.find(p=>
 function sleeveAUM(h){
   const m=getActiveModel();
   if(m.id===6)return SOLO_AUM;
-  return isEquityH(h)?EQUITY_AUM:FIXED_AUM;
+  return isEquityH(h)?equityAUM():fixedAUM();
 }
 
-// Sleeve weight factor: what fraction of the TOTAL paired portfolio does this sleeve represent?
-// Used when in pair view to scale individual holding weights correctly
 function sleeveWeightFactor(h){
-  if(!hasFixed()||activeSleeve!=='pair') return 1.0;
-  return isEquityH(h) ? EQUITY_WEIGHT : FIXED_WEIGHT;
+  if(!hasFixed()||activeSleeve!=='pair')return 1.0;
+  return isEquityH(h)?allocWeights.equity:allocWeights.fixed;
 }
 
-function getPrice(ticker){
-  return priceMap[ticker]||priceMap[ticker.replace('.TO','')]||null;
-}
+function getPrice(ticker){return priceMap[ticker]||priceMap[ticker.replace('.TO','')]||null;}
 
 function computeStats(h){
-  const pd=getPrice(h.ticker);
-  if(!pd||!pd.price) return null;
-
-  const currentPriceCAD  = toCad(pd.price, h.currency);
-  const prevPriceCAD     = pd.prevClose ? toCad(pd.prevClose, h.currency) : null;
-  const purchasePriceCAD = pd.purchasePrice ? toCad(pd.purchasePrice, h.currency) : null;
-
-  // Day change: today vs yesterday's close
-  const dayChgPct = prevPriceCAD && prevPriceCAD>0
-    ? ((currentPriceCAD - prevPriceCAD) / prevPriceCAD) * 100
-    : null;
-
-  // Shares held: based on purchase price and target sleeve allocation
-  const targetCAD = h.weight * sleeveAUM(h);
-  const shares = purchasePriceCAD && purchasePriceCAD>0
-    ? targetCAD / purchasePriceCAD
-    : targetCAD / currentPriceCAD; // fallback: no gain if no purchase price
-
-  const currentValCAD = shares * currentPriceCAD;
-  const costBasisCAD  = purchasePriceCAD ? shares * purchasePriceCAD : currentValCAD;
-  const gainCAD       = currentValCAD - costBasisCAD;
-  const gainPct       = costBasisCAD>0 ? (gainCAD/costBasisCAD)*100 : 0;
-
-  // Day P&L in CAD
-  const dayPLCAD = prevPriceCAD ? shares*(currentPriceCAD-prevPriceCAD) : 0;
-
-  return{targetCAD,currentValCAD,costBasisCAD,gainCAD,gainPct,
-    dayChgPct,dayPLCAD,price:pd.price,currency:h.currency,shares};
+  const pd=getPrice(h.ticker); if(!pd||!pd.price)return null;
+  const currentPriceCAD=toCad(pd.price,h.currency);
+  const prevPriceCAD=pd.prevClose?toCad(pd.prevClose,h.currency):null;
+  const purchasePriceCAD=pd.purchasePrice?toCad(pd.purchasePrice,h.currency):null;
+  const dayChgPct=prevPriceCAD&&prevPriceCAD>0?((currentPriceCAD-prevPriceCAD)/prevPriceCAD)*100:null;
+  const targetCAD=h.weight*sleeveAUM(h);
+  const shares=purchasePriceCAD&&purchasePriceCAD>0?targetCAD/purchasePriceCAD:targetCAD/currentPriceCAD;
+  const currentValCAD=shares*currentPriceCAD;
+  const costBasisCAD=purchasePriceCAD?shares*purchasePriceCAD:currentValCAD;
+  const gainCAD=currentValCAD-costBasisCAD;
+  const gainPct=costBasisCAD>0?(gainCAD/costBasisCAD)*100:0;
+  const dayPLCAD=prevPriceCAD?shares*(currentPriceCAD-prevPriceCAD):0;
+  return{targetCAD,currentValCAD,costBasisCAD,gainCAD,gainPct,dayChgPct,dayPLCAD,price:pd.price,currency:h.currency,shares};
 }
 
-// Target weight adjusted for pair view (e.g. 5% equity weight → 5% × 63% = 3.15% of total)
 function targetWeightInView(h){
-  if(hasFixed()&&activeSleeve==='pair'){
-    return h.weight * sleeveWeightFactor(h);
-  }
+  if(hasFixed()&&activeSleeve==='pair')return h.weight*sleeveWeightFactor(h);
   return h.weight;
 }
 
@@ -375,20 +388,146 @@ function getDisplayHoldings(){
   const eq=holdings.filter(h=>h.modelId===m.id);
   const fx=pair?holdings.filter(h=>h.modelId===pair.fixedId):[];
   if(m.type==='equity'&&pair){
-    if(activeSleeve==='equity') return eq;
-    if(activeSleeve==='fixed')  return fx;
-    return [...eq,...fx];
+    if(activeSleeve==='equity')return eq;
+    if(activeSleeve==='fixed')return fx;
+    return[...eq,...fx];
   }
   return eq;
 }
 
 function getTotalPortfolioValue(){
-  // Full portfolio value including cash
   const dh=getDisplayHoldings();
   const investedVal=dh.reduce((s,h)=>{const st=computeStats(h);return s+(st?st.currentValCAD:0);},0);
   const m=getActiveModel();
-  const cash=m.id===6?SOLO_CASH:activeSleeve==='fixed'?0:CASH_EQUITY;
+  const cash=m.id===6?SOLO_CASH:activeSleeve==='fixed'?0:cashAUM();
   return investedVal+cash;
+}
+
+// ── ALLOCATION EDITOR ─────────────────────────────────────────────────────────
+function toggleAllocEditor(){
+  allocEditorOpen=!allocEditorOpen;
+  gi('alloc-editor').style.display=allocEditorOpen?'block':'none';
+  if(allocEditorOpen)syncAllocInputs();
+}
+
+function syncAllocInputs(){
+  gi('inp-equity').value=(allocWeights.equity*100).toFixed(0);
+  gi('inp-fixed').value=(allocWeights.fixed*100).toFixed(0);
+  gi('inp-cash').value=(allocWeights.cash*100).toFixed(0);
+  updateAllocTotal();
+}
+
+function onAllocInput(changed){
+  // When equity changes, auto-adjust fixed to keep total = 100%
+  const eq=parseFloat(gi('inp-equity').value)||0;
+  const fx=parseFloat(gi('inp-fixed').value)||0;
+  const ca=parseFloat(gi('inp-cash').value)||0;
+  if(changed==='equity'){
+    const remaining=Math.max(0,100-eq-ca);
+    gi('inp-fixed').value=remaining.toFixed(0);
+  }
+  updateAllocTotal();
+}
+
+function updateAllocTotal(){
+  const eq=parseFloat(gi('inp-equity').value)||0;
+  const fx=parseFloat(gi('inp-fixed').value)||0;
+  const ca=parseFloat(gi('inp-cash').value)||0;
+  const total=eq+fx+ca;
+  const el=gi('alloc-total');
+  el.textContent=total.toFixed(0)+'%';
+  el.className='alloc-total '+(Math.abs(total-100)<0.01?'ok':'bad');
+  [gi('inp-equity'),gi('inp-fixed'),gi('inp-cash')].forEach(i=>i.classList.toggle('err',Math.abs(total-100)>=0.01));
+}
+
+function applyAlloc(){
+  const eq=parseFloat(gi('inp-equity').value)||0;
+  const fx=parseFloat(gi('inp-fixed').value)||0;
+  const ca=parseFloat(gi('inp-cash').value)||0;
+  const total=eq+fx+ca;
+  if(Math.abs(total-100)>=0.01){alert('Allocations must sum to 100% before applying.');return;}
+  allocWeights={equity:eq/100,fixed:fx/100,cash:ca/100};
+  renderAll();
+  // Update sleeve divider labels
+  gi('alloc-editor').style.borderColor='rgba(61,214,140,0.3)';
+  setTimeout(()=>gi('alloc-editor').style.borderColor='',1200);
+}
+
+function resetAlloc(){
+  allocWeights={equity:0.63,fixed:0.35,cash:0.02};
+  syncAllocInputs();
+  renderAll();
+}
+
+// ── NEWS ──────────────────────────────────────────────────────────────────────
+async function fetchNewsForTicker(ticker, name, sector, geo){
+  if(newsCache[ticker]) return newsCache[ticker];
+  const prompt=`You are a financial analyst assistant. Provide a concise news briefing for ${name} (${ticker}), a ${sector} company in ${geo}.
+
+In 3-4 sentences, summarize: (1) the most important recent news or developments affecting this stock in the past 2-4 weeks, (2) any key analyst sentiment or price target changes, (3) any macro or sector tailwinds/headwinds relevant to this name.
+
+Then list 3 specific recent headline topics (not full headlines, just 5-8 word topic summaries) as a JSON array called "headlines".
+
+Respond in this exact format:
+SUMMARY: [your 3-4 sentence summary]
+HEADLINES: ["topic 1","topic 2","topic 3"]`;
+
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':'','anthropic-version':'2023-06-01'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:400,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const data=await r.json();
+  const text=data.content?.[0]?.text||'';
+  const summaryMatch=text.match(/SUMMARY:\s*([\s\S]*?)(?=HEADLINES:|$)/);
+  const headlinesMatch=text.match(/HEADLINES:\s*(\[[\s\S]*?\])/);
+  const summary=summaryMatch?summaryMatch[1].trim():'No summary available.';
+  let headlines=[];
+  try{headlines=JSON.parse(headlinesMatch?.[1]||'[]');}catch(e){}
+  const result={summary,headlines};
+  newsCache[ticker]=result;
+  return result;
+}
+
+function closeNewsPanel(){
+  if(openNewsRow){
+    const nr=document.getElementById('news-row-'+openNewsRow);
+    if(nr)nr.remove();
+    const tr=document.getElementById('tr-'+openNewsRow);
+    if(tr)tr.classList.remove('news-open');
+    openNewsRow=null;
+  }
+}
+
+async function toggleNews(ticker,name,sector,geo,colCount){
+  if(openNewsRow===ticker){closeNewsPanel();return;}
+  closeNewsPanel();
+  openNewsRow=ticker;
+  const tr=document.getElementById('tr-'+ticker);
+  if(!tr)return;
+  tr.classList.add('news-open');
+  // Insert news row after the ticker row
+  const newsRow=document.createElement('tr');
+  newsRow.id='news-row-'+ticker;
+  newsRow.className='news-row';
+  newsRow.innerHTML=`<td colspan="${colCount}"><div class="news-panel"><div class="news-panel-inner">
+    <div class="news-loading"><div class="spinner" style="width:12px;height:12px;border-width:1.5px"></div>Loading AI news briefing for ${name}…</div>
+  </div></div></td>`;
+  tr.after(newsRow);
+  try{
+    const{summary,headlines}=await fetchNewsForTicker(ticker,name,sector,geo);
+    const hHTML=headlines.length?`<div class="news-headlines">${headlines.map(h=>`<div class="news-headline">${h}</div>`).join('')}</div>`:'';
+    document.querySelector('#news-row-'+ticker+' .news-panel-inner').innerHTML=
+      `<div class="news-summary">${summary}</div>${hHTML}
+       <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:8px">AI summary · click row again to close</div>`;
+  }catch(e){
+    document.querySelector('#news-row-'+ticker+' .news-panel-inner').innerHTML=
+      `<div style="font-size:12px;color:var(--red);font-family:var(--mono)">Could not load news: ${e.message}</div>`;
+  }
 }
 
 // ── UI BUILDERS ───────────────────────────────────────────────────────────────
@@ -408,84 +547,60 @@ function buildSleeveTabs(){
     .map(([v,l])=>`<button class="sleeve-tab${activeSleeve===v?' active':''}" onclick="setSleeve('${v}')">${l}</button>`).join('');
 }
 
-// ── RENDER: METRICS ───────────────────────────────────────────────────────────
 function renderMetrics(){
   const dh=getDisplayHoldings();
   let totalVal=0,totalCost=0,totalDayPL=0;
-  dh.forEach(h=>{
-    const s=computeStats(h);if(!s)return;
-    totalVal  +=s.currentValCAD;
-    totalCost +=s.costBasisCAD;
-    totalDayPL+=s.dayPLCAD;
-  });
+  dh.forEach(h=>{const s=computeStats(h);if(!s)return;totalVal+=s.currentValCAD;totalCost+=s.costBasisCAD;totalDayPL+=s.dayPLCAD;});
   const m=getActiveModel();
-  const cash=m.id===6?SOLO_CASH:activeSleeve==='fixed'?0:CASH_EQUITY;
+  const cash=m.id===6?SOLO_CASH:activeSleeve==='fixed'?0:cashAUM();
   totalVal+=cash;
-  const totalGain   =totalVal-totalCost-cash;
+  const totalGain=totalVal-totalCost-cash;
   const totalGainPct=totalCost>0?(totalGain/totalCost)*100:0;
-  const dayPct      =totalVal>0?(totalDayPL/totalVal)*100:0;
-
+  const dayPct=totalVal>0?(totalDayPL/totalVal)*100:0;
   gi('metrics').innerHTML=[
-    {l:'portfolio value',   v:'$'+fmt(totalVal)},
-    {l:'total return',      v:fmtC(totalGain),    s:fmtP(totalGainPct), pos:totalGain>=0},
-    {l:'day p&l',           v:fmtC(totalDayPL),   s:fmtP(dayPct),       pos:totalDayPL>=0},
-    {l:'cash (CAD)',         v:'$'+fmt(cash)},
-    {l:'usd / cad',         v:usdcadRate.toFixed(4), s:'via sheet'},
-  ].map(c=>`<div class="metric">
-    <div class="metric-label">${c.l}</div>
+    {l:'portfolio value',v:'$'+fmt(totalVal)},
+    {l:'total return',v:fmtC(totalGain),s:fmtP(totalGainPct),pos:totalGain>=0},
+    {l:'day p&l',v:fmtC(totalDayPL),s:fmtP(dayPct),pos:totalDayPL>=0},
+    {l:'cash (CAD)',v:'$'+fmt(cash),s:`${(allocWeights.cash*100).toFixed(0)}% sleeve`},
+    {l:'usd / cad',v:usdcadRate.toFixed(4),s:'via sheet'},
+  ].map(c=>`<div class="metric"><div class="metric-label">${c.l}</div>
     <div class="metric-value${c.pos===true?' pos':c.pos===false?' neg':''}">${c.v}</div>
     ${c.s?`<div class="metric-sub${c.pos===true?' pos':c.pos===false?' neg':''}">${c.s}</div>`:''}</div>`).join('');
 }
 
-// ── RENDER: HOLDINGS TABLE ────────────────────────────────────────────────────
 function renderHoldings(){
   const dh=getDisplayHoldings();
   const totalPortVal=getTotalPortfolioValue();
   const m=getActiveModel();
   const sleeve=activeSleeve==='pair'?' (equity + fixed)':activeSleeve==='fixed'?' (fixed/alts)':'';
   gi('holdings-title').textContent=`holdings — ${m.name}${sleeve}`;
-
-  // In pair view, add sleeve dividers
   const isPair=hasFixed()&&activeSleeve==='pair';
-  const fixedId=getFixedId();
-
-  let rows='';
-  let lastIsEquity=null;
+  const COL_COUNT=9;
+  let rows='', lastIsEquity=null;
 
   dh.forEach(h=>{
     const isEq=isEquityH(h);
-
-    // Insert sleeve divider row in pair view
     if(isPair&&lastIsEquity!==null&&isEq!==lastIsEquity){
-      rows+=`<tr><td colspan="9" class="sleeve-label">fixed / alts sleeve (${(FIXED_WEIGHT*100).toFixed(0)}% of portfolio)</td></tr>`;
+      rows+=`<tr><td colspan="${COL_COUNT}" class="sleeve-label">fixed / alts sleeve (${(allocWeights.fixed*100).toFixed(0)}% of portfolio)</td></tr>`;
     }
     if(isPair&&lastIsEquity===null&&isEq){
-      rows+=`<tr><td colspan="9" class="sleeve-label">equity sleeve (${(EQUITY_WEIGHT*100).toFixed(0)}% of portfolio)</td></tr>`;
+      rows+=`<tr><td colspan="${COL_COUNT}" class="sleeve-label">equity sleeve (${(allocWeights.equity*100).toFixed(0)}% of portfolio)</td></tr>`;
     }
     lastIsEquity=isEq;
-
     const s=computeStats(h);
     if(!s){
-      rows+=`<tr><td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td><td colspan="8" class="muted" style="font-size:11px">no price in sheet</td></tr>`;
+      rows+=`<tr id="tr-${h.ticker}"><td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td><td colspan="${COL_COUNT-1}" class="muted" style="font-size:11px">no price in sheet</td></tr>`;
       return;
     }
-
-    // Target weight: in pair view, scale by sleeve factor
-    const targetWt = targetWeightInView(h);
-    // Current weight: always as % of total portfolio value
-    const currWt = totalPortVal>0 ? s.currentValCAD/totalPortVal : targetWt;
-    const drift  = currWt - targetWt;
-    const barW   = Math.min(48,Math.abs(drift)*800);
-    const barCol = Math.abs(drift)<0.005?'#3dd68c':drift>0?'#4a9eff':'#ff6b6b';
-
-    const dayStr = s.dayChgPct!=null
-      ? `<span class="${s.dayChgPct>=0?'pos':'neg'}">${fmtP(s.dayChgPct)}</span>`
-      : `<span class="muted">—</span>`;
-
+    const targetWt=targetWeightInView(h);
+    const currWt=totalPortVal>0?s.currentValCAD/totalPortVal:targetWt;
+    const drift=currWt-targetWt;
+    const barW=Math.min(48,Math.abs(drift)*800);
+    const barCol=Math.abs(drift)<0.005?'#3dd68c':drift>0?'#4a9eff':'#ff6b6b';
+    const dayStr=s.dayChgPct!=null?`<span class="${s.dayChgPct>=0?'pos':'neg'}">${fmtP(s.dayChgPct)}</span>`:`<span class="muted">—</span>`;
     const pd=priceMap[h.ticker]||priceMap[h.ticker.replace('.TO','')]||{};
-    const purchaseStr=pd.purchasePrice ? `${h.currency==='USD'?'US$':'C$'}${fmt(pd.purchasePrice,2)}` : '<span class="muted">—</span>';
-
-    rows+=`<tr>
+    const purchaseStr=pd.purchasePrice?`${h.currency==='USD'?'US$':'C$'}${fmt(pd.purchasePrice,2)}`:'<span class="muted">—</span>';
+    rows+=`<tr id="tr-${h.ticker}" class="clickable-row" onclick="toggleNews('${h.ticker}','${h.name.replace(/'/g,"\\'")}','${h.sector}','${h.geo}',${COL_COUNT})">
       <td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td>
       <td>${purchaseStr}</td>
       <td>${h.currency==='USD'?'US$':'C$'}${fmt(s.price,2)}</td>
@@ -493,25 +608,16 @@ function renderHoldings(){
       <td>${dayStr}</td>
       <td class="muted">${(targetWt*100).toFixed(2)}%</td>
       <td>${(currWt*100).toFixed(2)}%</td>
-      <td>
-        <span class="${drift>=0?'pos':'neg'}" style="font-size:10px">${drift>=0?'+':''}${(drift*100).toFixed(2)}%</span>
-        <div class="drift-bar"><div class="drift-fill" style="width:${barW}px;background:${barCol}"></div></div>
-      </td>
+      <td><span class="${drift>=0?'pos':'neg'}" style="font-size:10px">${drift>=0?'+':''}${(drift*100).toFixed(2)}%</span> <div class="drift-bar"><div class="drift-fill" style="width:${barW}px;background:${barCol}"></div></div></td>
       <td>$${fmt(s.currentValCAD)}</td>
     </tr>`;
   });
-
   gi('holdings-body').innerHTML=rows;
 }
 
-// ── RENDER: CHARTS ────────────────────────────────────────────────────────────
 function groupBy(arr,keyFn){
   const m={};
-  arr.forEach(h=>{
-    const s=computeStats(h);if(!s)return;
-    const k=keyFn(h)||'Other';
-    m[k]=(m[k]||0)+s.currentValCAD;
-  });
+  arr.forEach(h=>{const s=computeStats(h);if(!s)return;const k=keyFn(h)||'Other';m[k]=(m[k]||0)+s.currentValCAD;});
   return m;
 }
 
@@ -523,19 +629,15 @@ function makeDonut(canvasId,legendId,dataMap,cutout='62%'){
   const leg=gi(legendId);
   if(leg)leg.innerHTML=labels.map((l,i)=>`<div class="legend-item"><span class="legend-sq" style="background:${colors[i]}"></span>${l} ${((vals[i]/total)*100).toFixed(1)}%</div>`).join('');
   destroyChart(canvasId);
-  charts[canvasId]=new Chart(gi(canvasId),{
-    type:'doughnut',
-    data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:0,hoverOffset:4}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout}
-  });
+  charts[canvasId]=new Chart(gi(canvasId),{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout}});
 }
 
 function renderAllocChart(){
   const dh=getDisplayHoldings();
   let dm;
-  if(allocView==='sector')      dm=groupBy(dh,h=>h.sector);
-  else if(allocView==='geo')    dm=groupBy(dh,h=>h.geo);
-  else if(allocView==='currency') dm=groupBy(dh,h=>h.currency);
+  if(allocView==='sector')dm=groupBy(dh,h=>h.sector);
+  else if(allocView==='geo')dm=groupBy(dh,h=>h.geo);
+  else if(allocView==='currency')dm=groupBy(dh,h=>h.currency);
   else dm=groupBy(dh,h=>h.ticker.replace('.TO',''));
   makeDonut('alloc-chart','alloc-legend',dm,'62%');
 }
@@ -547,66 +649,46 @@ function renderSleeveChart(){
   const fxH=pair?holdings.filter(h=>h.modelId===pair.fixedId):[];
   const eqVal=eqH.reduce((s,h)=>{const st=computeStats(h);return s+(st?st.currentValCAD:0);},0);
   const fxVal=fxH.reduce((s,h)=>{const st=computeStats(h);return s+(st?st.currentValCAD:0);},0);
-  const cash=m.id===6?SOLO_CASH:CASH_EQUITY;
+  const cash=m.id===6?SOLO_CASH:cashAUM();
   const dm={};
   if(eqVal>0)dm['Equity']=eqVal;
   if(fxVal>0)dm['Fixed/Alts']=fxVal;
-  if(cash>0) dm['Cash']=cash;
+  if(cash>0)dm['Cash']=cash;
   makeDonut('sleeve-chart','sleeve-legend',dm,'58%');
 }
 
 function renderBreakdowns(){
   const dh=getDisplayHoldings();
   makeDonut('sector-chart','sector-legend',groupBy(dh,h=>h.sector),'58%');
-  makeDonut('geo-chart',   'geo-legend',   groupBy(dh,h=>h.geo),   '58%');
-  makeDonut('curr-chart',  'curr-legend',  groupBy(dh,h=>h.currency),'58%');
+  makeDonut('geo-chart','geo-legend',groupBy(dh,h=>h.geo),'58%');
+  makeDonut('curr-chart','curr-legend',groupBy(dh,h=>h.currency),'58%');
 }
 
-// ── RENDER: REBALANCE ─────────────────────────────────────────────────────────
 function renderRebal(){
   const dh=getDisplayHoldings();
   const totalPortVal=getTotalPortfolioValue();
   const isPair=hasFixed()&&activeSleeve==='pair';
   let rows='',lastIsEquity=null;
-
   dh.forEach(h=>{
     const isEq=isEquityH(h);
-    if(isPair&&lastIsEquity!==null&&isEq!==lastIsEquity){
-      rows+=`<div style="font-size:9px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:4px">fixed / alts sleeve</div>`;
-    }
-    if(isPair&&lastIsEquity===null&&isEq){
-      rows+=`<div style="font-size:9px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:4px 0">equity sleeve</div>`;
-    }
+    if(isPair&&lastIsEquity!==null&&isEq!==lastIsEquity)rows+=`<div style="font-size:9px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:4px">fixed / alts sleeve</div>`;
+    if(isPair&&lastIsEquity===null&&isEq)rows+=`<div style="font-size:9px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:4px 0">equity sleeve</div>`;
     lastIsEquity=isEq;
-
     const s=computeStats(h);
-    if(!s){
-      rows+=`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:500;font-family:var(--mono)">${h.ticker.replace('.TO','')}</span><span style="font-size:10px;color:var(--text3)">${h.name}</span></div><span class="muted" style="font-size:11px">no price</span></div>`;
-      return;
-    }
-
-    // Target value in the context of the current view
+    if(!s){rows+=`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:500;font-family:var(--mono)">${h.ticker.replace('.TO','')}</span><span style="font-size:10px;color:var(--text3)">${h.name}</span></div><span class="muted" style="font-size:11px">no price</span></div>`;return;}
     const targetWt=targetWeightInView(h);
     const targetVal=targetWt*totalPortVal;
     const diff=targetVal-s.currentValCAD;
-
-    if(Math.abs(diff)<300){
-      rows+=`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:500;font-family:var(--mono)">${h.ticker.replace('.TO','')}</span><span style="font-size:10px;color:var(--text3)">${h.name}</span></div><span class="pill hold">hold</span></div>`;
-      return;
-    }
+    if(Math.abs(diff)<300){rows+=`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:500;font-family:var(--mono)">${h.ticker.replace('.TO','')}</span><span style="font-size:10px;color:var(--text3)">${h.name}</span></div><span class="pill hold">hold</span></div>`;return;}
     const action=diff>0?'buy':'sell';
     const diffShares=Math.abs(diff)/toCad(s.price,h.currency);
-    rows+=`<div class="rebal-row">
-      <div class="rebal-left"><span style="font-size:12px;font-weight:500;font-family:var(--mono)">${h.ticker.replace('.TO','')}</span><span style="font-size:10px;color:var(--text3)">${h.name}</span></div>
-      <div class="rebal-right"><span class="rebal-amount">${action==='buy'?'+':'−'}${diffShares.toFixed(2)} shares</span><span class="rebal-amount">${fmtC(Math.abs(diff))}</span><span class="pill ${action}">${action}</span></div>
-    </div>`;
+    rows+=`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:500;font-family:var(--mono)">${h.ticker.replace('.TO','')}</span><span style="font-size:10px;color:var(--text3)">${h.name}</span></div><div class="rebal-right"><span class="rebal-amount">${action==='buy'?'+':'−'}${diffShares.toFixed(2)} shares</span><span class="rebal-amount">${fmtC(Math.abs(diff))}</span><span class="pill ${action}">${action}</span></div></div>`;
   });
-
   gi('rebal-content').innerHTML=rows||'<p style="font-size:12px;color:var(--text3);padding:8px 0">All positions within tolerance.</p>';
 }
 
-// ── RENDER ALL ────────────────────────────────────────────────────────────────
 function renderAll(){
+  closeNewsPanel();
   renderMetrics();
   renderHoldings();
   renderAllocChart();
@@ -615,16 +697,43 @@ function renderAll(){
   if(rebalOpen)renderRebal();
 }
 
-// ── EVENT HANDLERS ────────────────────────────────────────────────────────────
+// ── SORT ──────────────────────────────────────────────────────────────────────
+function getCellSortVal(td){
+  const txt=(td.textContent||'').trim();
+  const num=parseFloat(txt.replace(/[$%,+\s]/g,'').replace('CAD','').replace('USD','').replace('M','e6').replace('\u2212','-'));
+  return isNaN(num)?txt.toLowerCase():num;
+}
+function sortTable(col){
+  if(sortCol===col){sortAsc=!sortAsc;}else{sortCol=col;sortAsc=false;}
+  document.querySelectorAll('.sort-icon').forEach(el=>{
+    const c=+el.dataset.col;
+    el.textContent=c!==sortCol?'\u21C5':sortAsc?'\u2191':'\u2193';
+    el.style.color=c===sortCol?'var(--blue)':'var(--text3)';
+  });
+  const tbody=gi('holdings-body');
+  const allRows=[...tbody.querySelectorAll('tr')];
+  const dataRows=allRows.filter(r=>r.querySelectorAll('td').length>2&&!r.classList.contains('news-row'));
+  const divRows=allRows.filter(r=>r.querySelectorAll('td').length<=2);
+  dataRows.sort((a,b)=>{
+    const tda=a.querySelectorAll('td')[col];
+    const tdb=b.querySelectorAll('td')[col];
+    if(!tda||!tdb)return 0;
+    const va=getCellSortVal(tda),vb=getCellSortVal(tdb);
+    if(typeof va==='number'&&typeof vb==='number')return sortAsc?va-vb:vb-va;
+    return sortAsc?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));
+  });
+  tbody.innerHTML='';
+  divRows.forEach(d=>tbody.appendChild(d));
+  dataRows.forEach(r=>tbody.appendChild(r));
+}
+
 function switchModel(id){activeModelId=id;activeSleeve='pair';buildModelNav();buildSleeveTabs();renderAll();}
 function setSleeve(v){activeSleeve=v;buildSleeveTabs();renderAll();}
 function setAllocView(v){
   allocView=v;
   document.querySelectorAll('.vtab').forEach(t=>{
     const txt=t.textContent.trim();
-    t.classList.toggle('active',
-      (v==='weight'&&txt==='weight')||(v==='sector'&&txt==='sector')||
-      (v==='geo'&&txt==='geography')||(v==='currency'&&txt==='currency'));
+    t.classList.toggle('active',(v==='weight'&&txt==='weight')||(v==='sector'&&txt==='sector')||(v==='geo'&&txt==='geography')||(v==='currency'&&txt==='currency'));
   });
   renderAllocChart();
 }
@@ -635,6 +744,7 @@ function toggleRebal(){
 }
 
 async function refreshAll(){
+  newsCache={};closeNewsPanel();
   showMain(false);showStatus(true);gi('err-area').innerHTML='';
   try{
     await loadAll();
@@ -642,45 +752,7 @@ async function refreshAll(){
     showStatus(false);showMain(true);renderAll();
     gi('updated-time').textContent='updated '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
     gi('footnote').textContent=`Prices via Google Finance · USD/CAD ${usdcadRate.toFixed(4)} · ${new Date().toLocaleDateString('en-CA')}`;
-  }catch(e){
-    showStatus(false);
-    gi('err-area').innerHTML=`<div class="err-banner">Error: ${e.message}</div>`;
-  }
-}
-
-
-// SORT
-let sortCol=-1, sortAsc=true;
-
-function getCellSortVal(td){
-  const txt=(td.textContent||'').trim();
-  const num=parseFloat(txt.replace(/[$%,+\s]/g,'').replace('CAD','').replace('USD','').replace('M','e6').replace('−','-'));
-  return isNaN(num) ? txt.toLowerCase() : num;
-}
-
-function sortTable(col){
-  if(sortCol===col){ sortAsc=!sortAsc; } else { sortCol=col; sortAsc=false; }
-  document.querySelectorAll('.sort-icon').forEach(el=>{
-    const c=+el.dataset.col;
-    el.textContent = c!==sortCol ? '\u21C5' : sortAsc ? '\u2191' : '\u2193';
-    el.style.color = c===sortCol ? 'var(--blue)' : 'var(--text3)';
-  });
-  const tbody=gi('holdings-body');
-  const allRows=[...tbody.querySelectorAll('tr')];
-  const dataRows=allRows.filter(r=>r.querySelectorAll('td').length>2);
-  const divRows=allRows.filter(r=>r.querySelectorAll('td').length<=2);
-  dataRows.sort((a,b)=>{
-    const tda=a.querySelectorAll('td')[col];
-    const tdb=b.querySelectorAll('td')[col];
-    if(!tda||!tdb) return 0;
-    const va=getCellSortVal(tda);
-    const vb=getCellSortVal(tdb);
-    if(typeof va==='number'&&typeof vb==='number') return sortAsc?va-vb:vb-va;
-    return sortAsc?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));
-  });
-  tbody.innerHTML='';
-  divRows.forEach(d=>tbody.appendChild(d));
-  dataRows.forEach(r=>tbody.appendChild(r));
+  }catch(e){showStatus(false);gi('err-area').innerHTML=`<div class="err-banner">Error: ${e.message}</div>`;}
 }
 
 async function init(){
