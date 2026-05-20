@@ -233,9 +233,12 @@ function parseHoldings(rows){
   const h=rows[0].map(x=>x.toLowerCase().trim());
   return rows.slice(1).filter(r=>r[0]).map(r=>{
     const o={};h.forEach((k,i)=>o[k]=(r[i]||'').trim());
+    // sector = col G (index 6), geo = col H (index 7) — read directly by index as fallback
+    const sector = o.sector || r[6] || 'Other';
+    const geo    = o.geo    || r[7] || 'Other';
     return{modelId:+o.model_id,ticker:o.ticker,name:o.name,
       currency:(o.currency||'CAD').toUpperCase(),weight:parseFloat(o.target_weight)||0,
-      addedDate:o.added_date,sector:o.sector||'Other',geo:o.geo||'Other'};
+      addedDate:o.added_date,sector,geo};
   });
 }
 
@@ -294,7 +297,7 @@ async function loadAll(){
   setStatus('Reading Google Sheet…');
   const [mR,hR,pR,prR]=await Promise.all([
     fetchRange('Models!A1:F20'),
-    fetchRange('Holdings!A1:H300'),
+    fetchRange('Holdings!A1:I300'),
     fetchRange('Pairings!A1:C20'),
     fetchRange('Prices!A1:H50'),
   ]);
@@ -454,16 +457,16 @@ function renderHoldings(){
 
     // Insert sleeve divider row in pair view
     if(isPair&&lastIsEquity!==null&&isEq!==lastIsEquity){
-      rows+=`<tr><td colspan="8" class="sleeve-label">fixed / alts sleeve (${(FIXED_WEIGHT*100).toFixed(0)}% of portfolio)</td></tr>`;
+      rows+=`<tr><td colspan="9" class="sleeve-label">fixed / alts sleeve (${(FIXED_WEIGHT*100).toFixed(0)}% of portfolio)</td></tr>`;
     }
     if(isPair&&lastIsEquity===null&&isEq){
-      rows+=`<tr><td colspan="8" class="sleeve-label">equity sleeve (${(EQUITY_WEIGHT*100).toFixed(0)}% of portfolio)</td></tr>`;
+      rows+=`<tr><td colspan="9" class="sleeve-label">equity sleeve (${(EQUITY_WEIGHT*100).toFixed(0)}% of portfolio)</td></tr>`;
     }
     lastIsEquity=isEq;
 
     const s=computeStats(h);
     if(!s){
-      rows+=`<tr><td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td><td colspan="7" class="muted" style="font-size:11px">no price in sheet</td></tr>`;
+      rows+=`<tr><td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td><td colspan="8" class="muted" style="font-size:11px">no price in sheet</td></tr>`;
       return;
     }
 
