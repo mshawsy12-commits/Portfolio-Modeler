@@ -143,14 +143,14 @@
         <table id="holdings-tbl">
           <thead><tr>
             <th onclick="sortTable(0)" style="cursor:pointer;user-select:none">ticker <span class="sort-icon" data-col="0">&#8645;</span></th>
-            <th onclick="sortTable(1)" style="cursor:pointer;user-select:none">price <span class="sort-icon" data-col="1">&#8645;</span></th>
-            <th onclick="sortTable(2)" style="cursor:pointer;user-select:none">purchase <span class="sort-icon" data-col="2">&#8645;</span></th>
-            <th onclick="sortTable(3)" style="cursor:pointer;user-select:none">day chg <span class="sort-icon" data-col="3">&#8645;</span></th>
-            <th onclick="sortTable(4)" style="cursor:pointer;user-select:none">target wt <span class="sort-icon" data-col="4">&#8645;</span></th>
-            <th onclick="sortTable(5)" style="cursor:pointer;user-select:none">curr wt <span class="sort-icon" data-col="5">&#8645;</span></th>
-            <th onclick="sortTable(6)" style="cursor:pointer;user-select:none">drift <span class="sort-icon" data-col="6">&#8645;</span></th>
-            <th onclick="sortTable(7)" style="cursor:pointer;user-select:none">mkt val (CAD) <span class="sort-icon" data-col="7">&#8645;</span></th>
-            <th onclick="sortTable(8)" style="cursor:pointer;user-select:none">total return <span class="sort-icon" data-col="8">&#8645;</span></th>
+            <th onclick="sortTable(1)" style="cursor:pointer;user-select:none">purchase <span class="sort-icon" data-col="1">&#8645;</span></th>
+            <th onclick="sortTable(2)" style="cursor:pointer;user-select:none">price <span class="sort-icon" data-col="2">&#8645;</span></th>
+            <th onclick="sortTable(3)" style="cursor:pointer;user-select:none">total return <span class="sort-icon" data-col="3">&#8645;</span></th>
+            <th onclick="sortTable(4)" style="cursor:pointer;user-select:none">day chg <span class="sort-icon" data-col="4">&#8645;</span></th>
+            <th onclick="sortTable(5)" style="cursor:pointer;user-select:none">target wt <span class="sort-icon" data-col="5">&#8645;</span></th>
+            <th onclick="sortTable(6)" style="cursor:pointer;user-select:none">curr wt <span class="sort-icon" data-col="6">&#8645;</span></th>
+            <th onclick="sortTable(7)" style="cursor:pointer;user-select:none">drift <span class="sort-icon" data-col="7">&#8645;</span></th>
+            <th onclick="sortTable(8)" style="cursor:pointer;user-select:none">mkt val (CAD) <span class="sort-icon" data-col="8">&#8645;</span></th>
           </tr></thead>
           <tbody id="holdings-body"></tbody>
         </table>
@@ -484,8 +484,9 @@ function renderHoldings(){
 
     rows+=`<tr>
       <td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td>
-      <td>${h.currency==='USD'?'US$':'C$'}${fmt(s.price,2)}</td>
       <td>${purchaseStr}</td>
+      <td>${h.currency==='USD'?'US$':'C$'}${fmt(s.price,2)}</td>
+      <td class="${s.gainCAD>=0?'pos':'neg'}">${fmtC(s.gainCAD)} <span style="opacity:.6;font-size:10px">${fmtP(s.gainPct)}</span></td>
       <td>${dayStr}</td>
       <td class="muted">${(targetWt*100).toFixed(2)}%</td>
       <td>${(currWt*100).toFixed(2)}%</td>
@@ -494,7 +495,6 @@ function renderHoldings(){
         <div class="drift-bar"><div class="drift-fill" style="width:${barW}px;background:${barCol}"></div></div>
       </td>
       <td>$${fmt(s.currentValCAD)}</td>
-      <td class="${s.gainCAD>=0?'pos':'neg'}">${fmtC(s.gainCAD)} <span style="opacity:.6;font-size:10px">${fmtP(s.gainPct)}</span></td>
     </tr>`;
   });
 
