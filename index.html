@@ -523,7 +523,7 @@ function renderHoldings(){
     const dayStr=s.dayChgPct!=null?`<span class="${s.dayChgPct>=0?'pos':'neg'}">${fmtP(s.dayChgPct)}</span>`:`<span class="muted">—</span>`;
     const pd=priceMap[h.ticker]||priceMap[h.ticker.replace('.TO','')]||{};
     const purchaseStr=pd.purchasePrice?`${h.currency==='USD'?'US$':'C$'}${fmt(pd.purchasePrice,2)}`:'<span class="muted">—</span>';
-    rows+=`<tr id="tr-${h.ticker}" class="clickable-row" onclick="toggleNews('${h.ticker}','${h.name.replace(/'/g,"\\'")}',${COL_COUNT})">
+    rows+=`<tr id="tr-${h.ticker}">
       <td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td>
       <td>${purchaseStr}</td>
       <td>${h.currency==='USD'?'US$':'C$'}${fmt(s.price,2)}</td>
