@@ -468,36 +468,52 @@ function resetAlloc(){
 async function fetchNewsForTicker(ticker, name){
   if(newsCache[ticker]) return newsCache[ticker];
 
-  // Clean ticker for Yahoo Finance (remove .TO for Canadian stocks)
   const yfTicker = ticker.replace('.TO','');
 
-  // Try Yahoo Finance RSS first, then Google News RSS as fallback
-  const feeds = [
-    `https://feeds.finance.yahoo.com/rss/2.0/headline?s=${yfTicker}&region=US&lang=en-US`,
-    `https://news.google.com/rss/search?q=${encodeURIComponent(name+' stock')}&hl=en-CA&gl=CA&ceid=CA:en`,
+  // Multiple proxies to try in order
+  const proxies = [
+    url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    url => `https://thingproxy.freeboard.io/fetch/${url}`,
   ];
 
-  const proxy = url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+  // Multiple feeds to try
+  const feeds = [
+    `https://feeds.finance.yahoo.com/rss/2.0/headline?s=${yfTicker}&region=US&lang=en-US`,
+    `https://finance.yahoo.com/rss/headline?s=${yfTicker}`,
+    `https://news.google.com/rss/search?q=${encodeURIComponent(name+' stock news')}&hl=en-CA&gl=CA&ceid=CA:en`,
+  ];
+
+  function parseRSS(xml){
+    const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)];
+    return items.slice(0,5).map(m=>{
+      const raw = m[1]||m[0];
+      const titleMatch = raw.match(/<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/title>/s);
+      const linkMatch  = raw.match(/<link>(?:<!\[CDATA\[)?(https?[^<\]]*?)(?:\]\]>)?<\/link>/s)
+                      || raw.match(/href="(https?[^"]+)"/);
+      const pubMatch   = raw.match(/<pubDate>(.*?)<\/pubDate>/);
+      const title = (titleMatch?.[1]||'').replace(/<[^>]+>/g,'').trim();
+      const link  = (linkMatch?.[1]||'').trim();
+      const pub   = pubMatch?.[1] ? new Date(pubMatch[1]).toLocaleDateString('en-CA',{month:'short',day:'numeric'}) : '';
+      return title.length>5 ? {title,link,pub} : null;
+    }).filter(Boolean);
+  }
 
   let headlines = [];
+
+  outer:
   for(const feed of feeds){
-    try{
-      const r = await fetch(proxy(feed), {signal: AbortSignal.timeout(8000)});
-      const j = await r.json();
-      const xml = j.contents||'';
-      // Parse <item> elements from RSS
-      const items = [...xml.matchAll(/<item>[\s\S]*?<\/item>/g)];
-      headlines = items.slice(0,5).map(m=>{
-        const titleMatch = m[0].match(/<title><!\[CDATA\[(.*?)\]\]><\/title>|<title>(.*?)<\/title>/);
-        const linkMatch  = m[0].match(/<link>(.*?)<\/link>|<link\s[^>]*href="([^"]+)"/);
-        const pubMatch   = m[0].match(/<pubDate>(.*?)<\/pubDate>/);
-        const title = (titleMatch?.[1]||titleMatch?.[2]||'').trim();
-        const link  = (linkMatch?.[1]||linkMatch?.[2]||'').trim();
-        const pub   = pubMatch?.[1] ? new Date(pubMatch[1]).toLocaleDateString('en-CA',{month:'short',day:'numeric'}) : '';
-        return title ? {title, link, pub} : null;
-      }).filter(Boolean);
-      if(headlines.length) break;
-    } catch(e){ continue; }
+    for(const makeProxy of proxies){
+      try{
+        const r = await fetch(makeProxy(feed), {signal: AbortSignal.timeout(7000)});
+        if(!r.ok) continue;
+        const j = await r.json();
+        // allorigins wraps in .contents, others return raw text
+        const xml = typeof j === 'string' ? j : (j.contents || j.body || JSON.stringify(j));
+        const parsed = parseRSS(xml);
+        if(parsed.length){headlines=parsed; break outer;}
+      } catch(e){ continue; }
+    }
   }
 
   const result = {headlines};
