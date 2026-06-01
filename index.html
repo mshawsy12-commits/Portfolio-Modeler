@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Tracker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500;600&display=swap');
+  :root {
+    --bg:#F7F6F2;--bg2:#FFFFFF;--bg3:#F0EEE9;--bg4:#E8E5DF;
+    --navy:#1B2B4B;--navy-light:#2D4270;--navy-dim:rgba(27,43,75,0.08);
+    --teal:#1A6B5A;--teal-light:#2A8A74;--teal-dim:rgba(26,107,90,0.1);
+    --gold:#B8860B;--gold-light:#D4A017;--gold-dim:rgba(184,134,11,0.1);
+    --red:#C0392B;--red-dim:rgba(192,57,43,0.08);
+    --green:#1A6B5A;--green-dim:rgba(26,107,90,0.08);
+    --border:#DDD9D0;--border2:#C8C3B8;
+    --text:#1A1A1A;--text2:#4A4A4A;--text3:#8A8680;
+    --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md:0 4px 12px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.04);
+    --radius:8px;--radius-lg:12px;--radius-xl:16px;
+    --serif:'Playfair Display',serif;--sans:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh}
+  .app{max-width:1440px;margin:0 auto;padding:0}
+
+  /* TOP BAR */
+  .topbar{background:var(--navy);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+  .topbar-left{display:flex;align-items:center;gap:20px}
+  .logo{font-family:var(--serif);font-size:18px;font-weight:600;color:#FFFFFF;letter-spacing:-.2px}
+  .logo span{color:#C9A84C}
+  .live-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:.04em}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:#3dd68c;animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .topbar-right{display:flex;gap:8px;align-items:center}
+  .nav-link{font-size:12px;color:rgba(255,255,255,0.6);text-decoration:none;padding:6px 12px;border-radius:var(--radius);transition:all .15s;cursor:pointer;border:none;background:none;font-family:var(--sans)}
+  .nav-link:hover{color:#fff;background:rgba(255,255,255,0.1)}
+  .nav-link.active{color:#fff;background:rgba(255,255,255,0.15)}
+
+  /* CONTENT AREA */
+  .content{padding:28px 32px}
+
+  /* MODEL TABS */
+  .model-nav{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+  .model-tab{font-family:var(--sans);font-size:12px;font-weight:500;padding:8px 16px;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;color:var(--text3);transition:all .15s;text-align:center;line-height:1.4;box-shadow:var(--shadow)}
+  .model-tab:hover{border-color:var(--navy-light);color:var(--navy)}
+  .model-tab.active{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:var(--shadow-md)}
+  .sleeve-tabs{display:flex;gap:6px;margin-bottom:20px}
+  .sleeve-tab{font-size:12px;font-weight:500;padding:6px 14px;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;color:var(--text3);transition:all .15s}
+  .sleeve-tab:hover{border-color:var(--teal);color:var(--teal)}
+  .sleeve-tab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+  /* METRIC CARDS */
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+  .metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow)}
+  .metric-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:600}
+  .metric-value{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--text)}
+  .metric-value.pos{color:var(--teal)}.metric-value.neg{color:var(--red)}
+  .metric-sub{font-size:11px;margin-top:3px;color:var(--text3);font-weight:500}
+  .metric-sub.pos{color:var(--teal)}.metric-sub.neg{color:var(--red)}
+  .metric.accent{background:var(--navy);border-color:var(--navy)}
+  .metric.accent .metric-label{color:rgba(255,255,255,0.5)}
+  .metric.accent .metric-value{color:#fff}
+  .metric.accent .metric-sub{color:rgba(255,255,255,0.5)}
+
+  /* CARDS */
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xl);padding:20px 24px;box-shadow:var(--shadow)}
+  .card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:16px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+  @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+  .ch{position:relative;width:100%}
+  .mb{margin-bottom:16px}
+
+  /* TABLE */
+  .tbl-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);padding:10px 12px;border-bottom:2px solid var(--border);text-align:right;white-space:nowrap;cursor:pointer;user-select:none;background:var(--bg3)}
+  th:first-child{text-align:left;border-radius:var(--radius) 0 0 0}
+  th:last-child{border-radius:0 var(--radius) 0 0}
+  th:hover{color:var(--navy)}
+  td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);text-align:right;font-size:12px}
+  td:first-child{text-align:left}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:var(--bg3)}
+  .tk{font-weight:600;font-size:12px;color:var(--navy)}
+  .tk-name{font-size:10px;color:var(--text3);margin-top:1px}
+  .pos{color:var(--teal)}.neg{color:var(--red)}.muted{color:var(--text3)}
+  .sort-icon{font-size:9px;margin-left:2px;color:var(--text3)}
+  th:hover .sort-icon{color:var(--navy)}
+
+  /* DRIFT BAR */
+  .drift-bar{height:4px;border-radius:2px;background:var(--bg4);width:48px;display:inline-block;vertical-align:middle;overflow:hidden;margin-left:4px}
+  .drift-fill{height:4px;border-radius:2px}
+
+  /* PILLS */
+  .pill{font-size:10px;padding:2px 9px;border-radius:20px;font-weight:600;letter-spacing:.02em}
+  .pill.buy{background:var(--teal-dim);color:var(--teal)}
+  .pill.sell{background:var(--red-dim);color:var(--red)}
+  .pill.hold{background:var(--bg4);color:var(--text3)}
+
+  /* REBAL */
+  .rebal-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+  .rebal-row:last-child{border-bottom:none}
+  .rebal-left{display:flex;flex-direction:column;gap:2px}
+  .rebal-right{display:flex;align-items:center;gap:12px}
+  .rebal-amount{font-size:12px;color:var(--text2);font-weight:500}
+
+  /* LEGEND */
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+  .legend-sq{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+
+  /* VTABS */
+  .vtabs{display:flex;gap:4px;margin-bottom:12px}
+  .vtab{font-size:11px;font-weight:500;padding:4px 10px;border-radius:6px;border:1.5px solid var(--border);background:none;cursor:pointer;color:var(--text3)}
+  .vtab.active{background:var(--navy-dim);color:var(--navy);border-color:var(--navy)}
+  .vtab:hover:not(.active){border-color:var(--border2);color:var(--text2)}
+
+  /* STATUS */
+  .status{display:flex;align-items:center;gap:12px;padding:60px 0;color:var(--text3);font-size:14px;justify-content:center}
+  .spinner{width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .err-banner{background:var(--red-dim);border:1px solid rgba(192,57,43,0.2);border-radius:var(--radius);padding:12px 16px;font-size:12px;color:var(--red);margin-bottom:12px;line-height:1.8}
+  .footnote{font-size:11px;color:var(--text3);text-align:center;padding:20px 0 8px}
+
+  /* SLEEVE LABEL */
+  .sleeve-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:8px 12px;background:var(--bg3);border-bottom:1px solid var(--border)}
+
+  /* TOOL PANELS */
+  .tool-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xl);padding:20px 24px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .tool-panel-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:14px}
+  .tool-row{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+  .tool-field{display:flex;flex-direction:column;gap:4px}
+  .tool-field label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+  .tool-field input{background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--radius);padding:7px 12px;font-size:13px;color:var(--text);text-align:right;outline:none;width:130px;font-family:var(--sans)}
+  .tool-field input:focus{border-color:var(--navy);background:var(--bg2)}
+  .tool-field input.wide{width:180px}
+  .tool-field input.err{border-color:var(--red)}
+  .tool-result{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--text);margin-top:10px;line-height:1.8}
+  .tool-result .hl{color:var(--navy);font-weight:600}
+  .tool-result .pos{color:var(--teal)}.tool-result .neg{color:var(--red)}
+  .alloc-total{font-size:13px;padding:7px 12px;border-radius:var(--radius);background:var(--bg3);border:1.5px solid var(--border)}
+  .alloc-total.ok{color:var(--teal);border-color:var(--teal);background:var(--teal-dim)}
+  .alloc-total.bad{color:var(--red);border-color:var(--red);background:var(--red-dim)}
+  .alloc-actions{display:flex;gap:8px;margin-left:auto;align-items:flex-end}
+  .alloc-field{display:flex;flex-direction:column;gap:4px}
+  .alloc-field label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+  .alloc-field input{background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--radius);padding:7px 12px;font-family:var(--sans);font-size:13px;color:var(--text);text-align:right;outline:none;width:80px}
+  .alloc-field input:focus{border-color:var(--navy)}
+  .alloc-field input.err{border-color:var(--red)}
+
+  /* BUTTONS */
+  .btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:8px 16px;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;color:var(--text2);display:inline-flex;align-items:center;gap:6px;transition:all .15s;box-shadow:var(--shadow)}
+  .btn:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+  .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .btn.primary:hover{background:var(--navy-light)}
+  .btn.teal{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .btn.teal:hover{background:var(--teal-light)}
+  .btn.gold{background:var(--bg2);color:var(--gold);border-color:var(--gold)}
+  .btn.gold:hover{background:var(--gold-dim)}
+  .btn.sm{padding:5px 12px;font-size:11px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP NAVIGATION BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo">Beacon <span>Portfolios</span></div>
+      <div class="live-badge"><span class="live-dot"></span><span id="updated-time">loading...</span></div>
+    </div>
+    <div class="topbar-right">
+      <button class="nav-link active" onclick="showPage('dashboard')">Dashboard</button>
+      <button class="nav-link" onclick="showPage('editor')">Portfolio Editor</button>
+      <button class="nav-link" onclick="showPage('compare')">Comparison</button>
+      <button class="btn sm primary" onclick="refreshAll()" style="margin-left:8px">&#8635; Refresh</button>
+      <button id="signin-btn" class="btn sm" onclick="signIn()" style="margin-left:4px;background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.2)">&#9679; Sign In to Edit</button>
+      <span id="signin-status" style="font-size:11px;color:rgba(255,255,255,0.5);display:none"></span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- PAGE 1: DASHBOARD                                               -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div id="page-dashboard" class="content">
+    <div class="model-nav" id="model-nav"></div>
+    <div class="sleeve-tabs" id="sleeve-tabs"></div>
+    <div id="err-area"></div>
+    <div id="status-area" class="status"><div class="spinner"></div><span id="status-msg">Loading...</span></div>
+
+    <div id="main" style="display:none">
+
+      <!-- TOOL PANELS -->
+      <div id="alloc-editor" class="tool-panel" style="display:none">
+        <div class="tool-panel-title">Allocation Editor</div>
+        <div class="tool-row">
+          <div class="alloc-field"><label>Equity %</label><input type="number" id="inp-equity" min="0" max="100" step="1" value="63" oninput="onAllocInput()"></div>
+          <div class="alloc-field"><label>Fixed %</label><input type="number" id="inp-fixed" min="0" max="100" step="1" value="35" oninput="onAllocInput()"></div>
+          <div class="alloc-field"><label>Cash %</label><input type="number" id="inp-cash" min="0" max="100" step="1" value="2" oninput="onAllocInput()"></div>
+          <div class="alloc-field"><label>Total</label><div class="alloc-total ok" id="alloc-total">100%</div></div>
+          <div class="alloc-actions"><button class="btn" onclick="resetAlloc()">Reset</button><button class="btn teal" onclick="applyAlloc()">Apply</button></div>
+        </div>
+      </div>
+
+      <div id="aum-editor" class="tool-panel" style="display:none">
+        <div class="tool-panel-title">Portfolio Size</div>
+        <div class="tool-row">
+          <div class="tool-field"><label>Portfolio AUM (CAD)</label><input type="number" id="inp-aum" class="wide" min="1000" step="10000" value="1000000" oninput="onAumInput()"></div>
+          <div class="tool-field"><label>Equity Sleeve</label><div class="tool-result" id="aum-equity" style="margin-top:0;padding:7px 12px">$630,000</div></div>
+          <div class="tool-field"><label>Fixed Sleeve</label><div class="tool-result" id="aum-fixed" style="margin-top:0;padding:7px 12px">$350,000</div></div>
+          <div class="tool-field"><label>Cash</label><div class="tool-result" id="aum-cash" style="margin-top:0;padding:7px 12px">$20,000</div></div>
+          <div class="alloc-actions"><button class="btn" onclick="resetAum()">Reset</button><button class="btn teal" onclick="applyAum()">Apply</button></div>
+        </div>
+      </div>
+
+      <div id="wac-calc" class="tool-panel" style="display:none">
+        <div class="tool-panel-title">Weighted Average Cost Calculator</div>
+        <div class="tool-row">
+          <div class="tool-field"><label>Current Shares</label><input type="number" id="wac-cur-shares" min="0" step="1" placeholder="e.g. 134" oninput="calcWac()"></div>
+          <div class="tool-field"><label>Current Cost Basis</label><input type="number" id="wac-cur-price" min="0" step="0.01" placeholder="e.g. 234.57" oninput="calcWac()"></div>
+          <div class="tool-field" style="justify-content:flex-end;padding-bottom:9px"><span style="font-size:20px;color:var(--text3)">+</span></div>
+          <div class="tool-field"><label>New Shares Adding</label><input type="number" id="wac-new-shares" min="0" step="1" placeholder="e.g. 20" oninput="calcWac()"></div>
+          <div class="tool-field"><label>Price Paid</label><input type="number" id="wac-new-price" min="0" step="0.01" placeholder="e.g. 261.00" oninput="calcWac()"></div>
+        </div>
+        <div id="wac-result" class="tool-result" style="display:none"></div>
+      </div>
+
+      <div class="metrics" id="metrics"></div>
+
+      <div class="grid-2 mb">
+        <div class="card">
+          <div class="card-title">Allocation</div>
+          <div class="vtabs">
+            <button class="vtab active" onclick="setAllocView('weight')">Weight</button>
+            <button class="vtab" onclick="setAllocView('sector')">Sector</button>
+            <button class="vtab" onclick="setAllocView('geo')">Geography</button>
+            <button class="vtab" onclick="setAllocView('currency')">Currency</button>
+          </div>
+          <div class="legend" id="alloc-legend"></div>
+          <div class="ch" style="height:160px"><canvas id="alloc-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Sleeve Breakdown</div>
+          <div class="legend" id="sleeve-legend"></div>
+          <div class="ch" style="height:160px"><canvas id="sleeve-chart"></canvas></div>
+        </div>
+      </div>
+
+      <div id="rebal-section" style="display:none" class="card mb">
+        <div class="card-title">Rebalance — Trades to Restore Target Weights</div>
+        <div id="rebal-content"></div>
+      </div>
+
+      <div class="card mb">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="card-title" id="holdings-title" style="margin-bottom:0">Holdings</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn sm gold" onclick="toggleAllocEditor()">&#9881; Allocations</button>
+            <button class="btn sm" onclick="toggleAumEditor()">&#36; Size</button>
+            <button class="btn sm" onclick="toggleWacCalc()">&#8776; Cost Calc</button>
+            <button class="btn sm primary" onclick="toggleRebal()">&#8862; Rebalance</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table id="holdings-tbl">
+            <thead><tr>
+              <th onclick="sortTable(0)">Ticker <span class="sort-icon" data-col="0">&#8645;</span></th>
+              <th onclick="sortTable(1)">Purchase <span class="sort-icon" data-col="1">&#8645;</span></th>
+              <th onclick="sortTable(2)">Price <span class="sort-icon" data-col="2">&#8645;</span></th>
+              <th onclick="sortTable(3)">Total Return <span class="sort-icon" data-col="3">&#8645;</span></th>
+              <th onclick="sortTable(4)">Day Chg <span class="sort-icon" data-col="4">&#8645;</span></th>
+              <th onclick="sortTable(5)">Target Wt <span class="sort-icon" data-col="5">&#8645;</span></th>
+              <th onclick="sortTable(6)">Curr Wt <span class="sort-icon" data-col="6">&#8645;</span></th>
+              <th onclick="sortTable(7)">Drift <span class="sort-icon" data-col="7">&#8645;</span></th>
+              <th onclick="sortTable(8)">Mkt Val (CAD) <span class="sort-icon" data-col="8">&#8645;</span></th>
+            </tr></thead>
+            <tbody id="holdings-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-3 mb">
+        <div class="card"><div class="card-title">Sector</div><div class="legend" id="sector-legend"></div><div class="ch" style="height:160px"><canvas id="sector-chart"></canvas></div></div>
+        <div class="card"><div class="card-title">Geography</div><div class="legend" id="geo-legend"></div><div class="ch" style="height:160px"><canvas id="geo-chart"></canvas></div></div>
+        <div class="card"><div class="card-title">Currency Exposure</div><div class="legend" id="curr-legend"></div><div class="ch" style="height:160px"><canvas id="curr-chart"></canvas></div></div>
+      </div>
+      <div class="footnote" id="footnote"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- PAGE 2: PORTFOLIO EDITOR                                        -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div id="page-editor" class="content" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+      <div>
+        <h1 style="font-family:var(--serif);font-size:24px;font-weight:500;color:var(--navy);margin-bottom:4px">Portfolio Editor</h1>
+        <p style="font-size:13px;color:var(--text3)">Adjust target weights, add cash positions, and push changes back to your sheet.</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <select id="editor-model-select" onchange="loadEditorModel()" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;cursor:pointer"></select>
+        <select id="editor-sleeve-select" onchange="loadEditorSleeve()" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;cursor:pointer">
+          <option value="equity">Equity Sleeve</option>
+          <option value="fixed">Fixed / Alts Sleeve</option>
+        </select>
+        <button class="btn teal" onclick="pushToSheet()">&#8593; Push to Sheet</button>
+      </div>
+    </div>
+
+    <!-- Editor summary bar -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px" id="editor-summary"></div>
+
+    <!-- Cash position -->
+    <div class="card mb">
+      <div class="card-title">Cash Position</div>
+      <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+        <div class="tool-field">
+          <label>CAD Cash %</label>
+          <input type="number" id="cash-cad-pct" min="0" max="100" step="0.1" value="0" placeholder="0.00" oninput="onCashInput()" style="width:100px">
+        </div>
+        <div class="tool-field">
+          <label>USD Cash %</label>
+          <input type="number" id="cash-usd-pct" min="0" max="100" step="0.1" value="0" placeholder="0.00" oninput="onCashInput()" style="width:100px">
+        </div>
+        <div class="tool-field">
+          <label>CAD Cash $</label>
+          <div class="tool-result" id="cash-cad-val" style="margin-top:0;padding:7px 12px;min-width:100px">$0</div>
+        </div>
+        <div class="tool-field">
+          <label>USD Cash $</label>
+          <div class="tool-result" id="cash-usd-val" style="margin-top:0;padding:7px 12px;min-width:100px">$0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Holdings editor table -->
+    <div class="card mb">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div class="card-title" style="margin-bottom:0" id="editor-holdings-title">Holdings</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:12px;color:var(--text3)">Total weight: </span>
+          <span id="editor-total-pct" style="font-size:14px;font-weight:600;color:var(--teal)">0.00%</span>
+          <span style="font-size:11px;color:var(--text3)" id="editor-total-status"></span>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th style="text-align:left">Ticker</th>
+            <th style="text-align:left">Name</th>
+            <th>Current Price</th>
+            <th>Purchase Price</th>
+            <th>Current Weight %</th>
+            <th>New Weight %</th>
+            <th>Target $ (CAD)</th>
+            <th>Est. Shares</th>
+            <th>Change</th>
+          </tr></thead>
+          <tbody id="editor-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="editor-push-result" style="display:none" class="tool-result mb"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- PAGE 3: COMPARISON                                              -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div id="page-compare" class="content" style="display:none">
+    <div style="margin-bottom:24px">
+      <h1 style="font-family:var(--serif);font-size:24px;font-weight:500;color:var(--navy);margin-bottom:4px">Allocation Comparison</h1>
+      <p style="font-size:13px;color:var(--text3)">Compare current vs proposed allocation across sector, geography, currency and sleeve weighting.</p>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
+      <select id="compare-model-select" onchange="loadCompare()" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;cursor:pointer"></select>
+      <span style="font-size:12px;color:var(--text3)">Comparing current sheet weights vs any pending editor changes</span>
+    </div>
+
+    <div class="grid-2 mb">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal)">Current Allocation — Sector</div>
+        <div class="legend" id="cmp-cur-sector-legend"></div>
+        <div class="ch" style="height:180px"><canvas id="cmp-cur-sector"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--navy)">Proposed Allocation — Sector</div>
+        <div class="legend" id="cmp-new-sector-legend"></div>
+        <div class="ch" style="height:180px"><canvas id="cmp-new-sector"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid-2 mb">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal)">Current — Geography</div>
+        <div class="legend" id="cmp-cur-geo-legend"></div>
+        <div class="ch" style="height:180px"><canvas id="cmp-cur-geo"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--navy)">Proposed — Geography</div>
+        <div class="legend" id="cmp-new-geo-legend"></div>
+        <div class="ch" style="height:180px"><canvas id="cmp-new-geo"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid-2 mb">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal)">Current — Currency</div>
+        <div class="legend" id="cmp-cur-curr-legend"></div>
+        <div class="ch" style="height:180px"><canvas id="cmp-cur-curr"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--navy)">Proposed — Currency</div>
+        <div class="legend" id="cmp-new-curr-legend"></div>
+        <div class="ch" style="height:180px"><canvas id="cmp-new-curr"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Exposure summary table -->
+    <div class="card mb">
+      <div class="card-title">Exposure Summary — Current vs Proposed</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th style="text-align:left">Category</th>
+            <th style="text-align:left">Group</th>
+            <th>Current Weight</th>
+            <th>Proposed Weight</th>
+            <th>Change</th>
+          </tr></thead>
+          <tbody id="compare-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+const SHEET_ID  = '1Is6Klorkyyy2F-TKLFKentZuP00Rn0OlCwLpbyf7tAY';
+const API_KEY   = 'AIzaSyDIXN_Bj8fWRydDxEoNfVsMezvvhcXN0iQ';
+const TOTAL_AUM = 1000000;
+const SOLO_AUM  = 198000;
+const SOLO_CASH = 2000;
+const COLORS = ['#1B2B4B','#1A6B5A','#B8860B','#C0392B','#2D6A8F','#7B4B8E','#4A7C59','#8B5E3C','#2E86AB','#A23B72','#3D5A80','#6B8F71','#C9A84C','#5C6BC0','#D4845A'];
+const OAUTH_CLIENT_ID = '702894188183-3mjmuaqkfdrjoqh65ttt2tpmpt5m5jn9.apps.googleusercontent.com';
+const SHEETS_SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
+let oauthToken = null;
+let tokenClient = null;
+
+let allocWeights = {equity:0.63,fixed:0.35,cash:0.02};
+let models=[], holdings=[], pairings=[], priceMap={};
+let usdcadRate=1.363;
+let activeModelId=1, activeSleeve='pair', allocView='weight';
+let charts={}, rebalOpen=false;
+let allocEditorOpen=false, aumEditorOpen=false, wacCalcOpen=false;
+let sortCol=-1, sortAsc=true;
+let customAUM=null;
+let editorChanges={}; // stores {ticker: newWeight} for editor page
+let currentPage='dashboard';
+
+function gi(id){return document.getElementById(id);}
+function setStatus(m){gi('status-msg').textContent=m;}
+function showStatus(v){gi('status-area').style.display=v?'flex':'none';}
+function showMain(v){gi('main').style.display=v?'block':'none';}
+function fmt(n,d=0){if(isNaN(n)||n==null)return'--';const a=Math.abs(n);return a>=1e6?(n/1e6).toFixed(2)+'M':n.toLocaleString('en-CA',{minimumFractionDigits:d,maximumFractionDigits:d});}
+function fmtC(n){return(n<0?'-$':'$')+fmt(Math.abs(n));}
+function fmtP(n){return(n>=0?'+':'')+n.toFixed(2)+'%';}
+function toCad(val,cur){return cur==='USD'?val*usdcadRate:val;}
+function destroyChart(k){if(charts[k]){charts[k].destroy();delete charts[k];}}
+function effectiveAUM(){return customAUM!==null?customAUM:TOTAL_AUM;}
+function equityAUM(){return effectiveAUM()*allocWeights.equity;}
+function fixedAUM(){return effectiveAUM()*allocWeights.fixed;}
+function cashAUM(){return effectiveAUM()*allocWeights.cash;}
+
+// PAGE NAVIGATION
+function showPage(page){
+  currentPage=page;
+  ['dashboard','editor','compare'].forEach(p=>{
+    gi('page-'+p).style.display=p===page?'block':'none';
+  });
+  document.querySelectorAll('.nav-link').forEach(el=>{
+    el.classList.toggle('active',el.textContent.toLowerCase().includes(page==='dashboard'?'dash':page==='editor'?'edit':'comp'));
+  });
+  if(page==='editor') initEditor();
+  if(page==='compare') loadCompare();
+}
+
+// SHEET FETCHING
+async function fetchRange(range){
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
+  const r=await fetch(url);
+  if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'HTTP '+r.status);}
+  return(await r.json()).values||[];
+}
+
+function parseModels(rows){
+  const h=rows[0].map(x=>x.toLowerCase().trim());
+  return rows.slice(1).filter(r=>r[0]).map(r=>{
+    const o={};h.forEach((k,i)=>o[k]=(r[i]||'').trim());
+    return{id:+o.model_id,name:o.model_name,type:o.model_type,currency:o.reporting_currency,
+      aum:parseFloat((o.total_aum||'').replace(/[$,]/g,''))||1000000,desc:o.description};
+  });
+}
+
+function parseHoldings(rows){
+  const h=rows[0].map(x=>x.toLowerCase().trim());
+  return rows.slice(1).filter(r=>r[0]).map(r=>{
+    const o={};h.forEach((k,i)=>o[k]=(r[i]||'').trim());
+    return{modelId:+o.model_id,ticker:o.ticker,name:o.name,
+      currency:(o.currency||'CAD').toUpperCase(),weight:parseFloat(o.target_weight)||0,
+      addedDate:o.added_date,sector:o.sector||r[6]||'Other',geo:o.geo||r[7]||'Other'};
+  });
+}
+
+function parsePairings(rows){
+  if(rows.length<2)return[];
+  const h=rows[0].map(x=>x.toLowerCase().replace(/[_\s]/g,''));
+  return rows.slice(1).filter(r=>r[0]).map(r=>{
+    const o={};h.forEach((k,i)=>o[k]=(r[i]||'').trim());
+    const ek=Object.keys(o).find(k=>k.includes('equity'));
+    const fk=Object.keys(o).find(k=>k.includes('fixed'));
+    return{equityId:+(o[ek]||0),fixedId:+(o[fk]||0)};
+  }).filter(x=>x.equityId&&x.fixedId);
+}
+
+function parsePrices(rows){
+  const map={};
+  rows.slice(1).forEach(r=>{
+    const ticker=(r[0]||'').trim();if(!ticker)return;
+    const gfPrice=parseFloat(r[1]),manualPrice=parseFloat(r[2]),finalPrice=parseFloat(r[3]);
+    const currency=(r[4]||'CAD').trim().toUpperCase();
+    const purchasePrice=parseFloat(r[5]);
+    const prevCloseG=parseFloat(r[6]),prevCloseH=parseFloat(r[7]);
+    const price=(!isNaN(manualPrice)&&manualPrice>0)?manualPrice:(!isNaN(gfPrice)&&gfPrice>0)?gfPrice:(!isNaN(finalPrice)&&finalPrice>0)?finalPrice:null;
+    const prev=(!isNaN(prevCloseH)&&prevCloseH>0)?prevCloseH:(!isNaN(prevCloseG)&&prevCloseG>0)?prevCloseG:null;
+    if(ticker==='USDCAD'&&price){usdcadRate=price;return;}
+    if(price)map[ticker]={price,currency,purchasePrice:(!isNaN(purchasePrice)&&purchasePrice>0)?purchasePrice:null,prevClose:prev};
+  });
+  return map;
+}
+
+async function loadAll(){
+  setStatus('Loading portfolio data...');
+  const [mR,hR,pR,prR]=await Promise.all([
+    fetchRange('Models!A1:F30'),
+    fetchRange('Holdings!A1:I500'),
+    fetchRange('Pairings!A1:C30'),
+    fetchRange('Prices!A1:H200'),
+  ]);
+  models=parseModels(mR);
+  holdings=parseHoldings(hR);
+  pairings=parsePairings(pR);
+  priceMap=parsePrices(prR);
+}
+
+// DATA HELPERS
+function getActiveModel(){return models.find(m=>m.id===activeModelId)||models[0];}
+function isEquityH(h){return models.find(m=>m.id===h.modelId)?.type==='equity';}
+function hasFixed(){return getActiveModel().type==='equity'&&!!pairings.find(p=>p.equityId===activeModelId);}
+function getFixedId(){return pairings.find(p=>p.equityId===activeModelId)?.fixedId||null;}
+function getPrice(t){return priceMap[t]||priceMap[t.replace('.TO','')]||null;}
+
+function sleeveAUM(h){
+  const m=getActiveModel();
+  if(m.id===6)return SOLO_AUM;
+  return isEquityH(h)?equityAUM():fixedAUM();
+}
+function sleeveWeightFactor(h){
+  if(!hasFixed()||activeSleeve!=='pair')return 1.0;
+  return isEquityH(h)?allocWeights.equity:allocWeights.fixed;
+}
+
+function computeStats(h){
+  const pd=getPrice(h.ticker);if(!pd||!pd.price)return null;
+  const currentPriceCAD=toCad(pd.price,h.currency);
+  const prevPriceCAD=pd.prevClose?toCad(pd.prevClose,h.currency):null;
+  const purchasePriceCAD=pd.purchasePrice?toCad(pd.purchasePrice,h.currency):null;
+  const dayChgPct=prevPriceCAD&&prevPriceCAD>0?((currentPriceCAD-prevPriceCAD)/prevPriceCAD)*100:null;
+  const targetCAD=h.weight*sleeveAUM(h);
+  const shares=purchasePriceCAD&&purchasePriceCAD>0?targetCAD/purchasePriceCAD:targetCAD/currentPriceCAD;
+  const currentValCAD=shares*currentPriceCAD;
+  const costBasisCAD=purchasePriceCAD?shares*purchasePriceCAD:currentValCAD;
+  const gainCAD=currentValCAD-costBasisCAD;
+  const gainPct=costBasisCAD>0?(gainCAD/costBasisCAD)*100:0;
+  const dayPLCAD=prevPriceCAD?shares*(currentPriceCAD-prevPriceCAD):0;
+  return{targetCAD,currentValCAD,costBasisCAD,gainCAD,gainPct,dayChgPct,dayPLCAD,price:pd.price,currency:h.currency,shares};
+}
+
+function targetWeightInView(h){
+  if(hasFixed()&&activeSleeve==='pair')return h.weight*sleeveWeightFactor(h);
+  return h.weight;
+}
+
+function getDisplayHoldings(){
+  const m=getActiveModel();
+  const pair=pairings.find(p=>p.equityId===m.id);
+  const eq=holdings.filter(h=>h.modelId===m.id);
+  const fx=pair?holdings.filter(h=>h.modelId===pair.fixedId):[];
+  if(m.type==='equity'&&pair){
+    if(activeSleeve==='equity')return eq;
+    if(activeSleeve==='fixed')return fx;
+    return[...eq,...fx];
+  }
+  return eq;
+}
+
+function getTotalPortfolioValue(){
+  const dh=getDisplayHoldings();
+  const inv=dh.reduce((s,h)=>{const st=computeStats(h);return s+(st?st.currentValCAD:0);},0);
+  const m=getActiveModel();
+  const cash=m.id===6?SOLO_CASH:activeSleeve==='fixed'?0:cashAUM();
+  return inv+cash;
+}
+
+// DASHBOARD RENDERS
+function buildModelNav(){
+  gi('model-nav').innerHTML=models.filter(m=>m.type==='equity').map(m=>{
+    const pair=pairings.find(p=>p.equityId===m.id);
+    return`<button class="model-tab${m.id===activeModelId?' active':''}" onclick="switchModel(${m.id})">${m.name}<br><span style="font-size:10px;opacity:.6">${m.desc}${pair?' · +Fixed':''}</span></button>`;
+  }).join('');
+}
+
+function buildSleeveTabs(){
+  const el=gi('sleeve-tabs');
+  if(!hasFixed()){el.innerHTML='';return;}
+  el.innerHTML=[['pair','Pair (Equity + Fixed)'],['equity','Equity Only'],['fixed','Fixed / Alts Only']]
+    .map(([v,l])=>`<button class="sleeve-tab${activeSleeve===v?' active':''}" onclick="setSleeve('${v}')">${l}</button>`).join('');
+}
+
+function renderMetrics(){
+  const dh=getDisplayHoldings();
+  let totalVal=0,totalCost=0,totalDayPL=0;
+  dh.forEach(h=>{const s=computeStats(h);if(!s)return;totalVal+=s.currentValCAD;totalCost+=s.costBasisCAD;totalDayPL+=s.dayPLCAD;});
+  const m=getActiveModel();
+  const cash=m.id===6?SOLO_CASH:activeSleeve==='fixed'?0:cashAUM();
+  totalVal+=cash;
+  const totalGain=totalVal-totalCost-cash;
+  const totalGainPct=totalCost>0?(totalGain/totalCost)*100:0;
+  const dayPct=totalVal>0?(totalDayPL/totalVal)*100:0;
+  gi('metrics').innerHTML=[
+    {l:'Portfolio Value',v:'$'+fmt(totalVal),accent:true},
+    {l:'Total Return',v:fmtC(totalGain),s:fmtP(totalGainPct),pos:totalGain>=0},
+    {l:'Day P&L',v:fmtC(totalDayPL),s:fmtP(dayPct),pos:totalDayPL>=0},
+    {l:'Cash (CAD)',v:'$'+fmt(cash),s:(allocWeights.cash*100).toFixed(0)+'% sleeve'},
+    {l:'USD / CAD',v:usdcadRate.toFixed(4),s:'live rate'},
+  ].map(c=>`<div class="metric${c.accent?' accent':''}">
+    <div class="metric-label">${c.l}</div>
+    <div class="metric-value${c.pos===true?' pos':c.pos===false?' neg':''}">${c.v}</div>
+    ${c.s?`<div class="metric-sub${c.pos===true?' pos':c.pos===false?' neg':''}">${c.s}</div>`:''}</div>`).join('');
+}
+
+function renderHoldings(){
+  const dh=getDisplayHoldings();
+  const totalPortVal=getTotalPortfolioValue();
+  const m=getActiveModel();
+  const sleeve=activeSleeve==='pair'?' (Equity + Fixed)':activeSleeve==='fixed'?' (Fixed/Alts)':'';
+  gi('holdings-title').textContent=m.name+sleeve;
+  const isPair=hasFixed()&&activeSleeve==='pair';
+  const COL=9;
+  let rows='',lastIsEquity=null;
+  dh.forEach(h=>{
+    const isEq=isEquityH(h);
+    if(isPair&&lastIsEquity===null&&isEq)
+      rows+=`<tr><td colspan="${COL}" class="sleeve-label">Equity Sleeve — ${(allocWeights.equity*100).toFixed(0)}% of Portfolio</td></tr>`;
+    if(isPair&&lastIsEquity!==null&&isEq!==lastIsEquity)
+      rows+=`<tr><td colspan="${COL}" class="sleeve-label">Fixed / Alts Sleeve — ${(allocWeights.fixed*100).toFixed(0)}% of Portfolio</td></tr>`;
+    lastIsEquity=isEq;
+    const s=computeStats(h);
+    if(!s){
+      rows+=`<tr><td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td><td colspan="${COL-1}" class="muted">no price</td></tr>`;
+      return;
+    }
+    const targetWt=targetWeightInView(h);
+    const currWt=totalPortVal>0?s.currentValCAD/totalPortVal:targetWt;
+    const drift=currWt-targetWt;
+    const barW=Math.min(48,Math.abs(drift)*800);
+    const barCol=Math.abs(drift)<0.005?'#1A6B5A':drift>0?'#1B2B4B':'#C0392B';
+    const dayStr=s.dayChgPct!=null?`<span class="${s.dayChgPct>=0?'pos':'neg'}">${fmtP(s.dayChgPct)}</span>`:`<span class="muted">--</span>`;
+    const pd=priceMap[h.ticker]||priceMap[h.ticker.replace('.TO','')]||{};
+    const purchaseStr=pd.purchasePrice?`${h.currency==='USD'?'US$':'C$'}${fmt(pd.purchasePrice,2)}`:`<span class="muted">--</span>`;
+    rows+=`<tr>
+      <td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td>
+      <td>${purchaseStr}</td>
+      <td>${h.currency==='USD'?'US$':'C$'}${fmt(s.price,2)}</td>
+      <td class="${s.gainCAD>=0?'pos':'neg'}">${fmtC(s.gainCAD)} <span style="opacity:.6;font-size:10px">${fmtP(s.gainPct)}</span></td>
+      <td>${dayStr}</td>
+      <td class="muted">${(targetWt*100).toFixed(2)}%</td>
+      <td>${(currWt*100).toFixed(2)}%</td>
+      <td><span class="${drift>=0?'pos':'neg'}" style="font-size:10px">${drift>=0?'+':''}${(drift*100).toFixed(2)}%</span><div class="drift-bar"><div class="drift-fill" style="width:${barW}px;background:${barCol}"></div></div></td>
+      <td>$${fmt(s.currentValCAD)}</td>
+    </tr>`;
+  });
+  gi('holdings-body').innerHTML=rows;
+}
+
+function groupBy(arr,keyFn,weightFn){
+  const m={};
+  arr.forEach(h=>{
+    const val=weightFn?weightFn(h):(()=>{const s=computeStats(h);return s?s.currentValCAD:0;})();
+    if(!val)return;
+    const k=keyFn(h)||'Other';
+    m[k]=(m[k]||0)+val;
+  });
+  return m;
+}
+
+function makeDonut(canvasId,legendId,dataMap,cutout){
+  const labels=Object.keys(dataMap);
+  const vals=labels.map(k=>+dataMap[k].toFixed(2));
+  const total=vals.reduce((a,b)=>a+b,0);
+  if(!total){destroyChart(canvasId);return;}
+  const colors=COLORS.slice(0,labels.length);
+  const leg=gi(legendId);
+  if(leg)leg.innerHTML=labels.map((l,i)=>`<div class="legend-item"><span class="legend-sq" style="background:${colors[i]}"></span>${l} ${((vals[i]/total)*100).toFixed(1)}%</div>`).join('');
+  destroyChart(canvasId);
+  charts[canvasId]=new Chart(gi(canvasId),{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:cutout||'62%'}});
+}
+
+function renderAllocChart(){
+  const dh=getDisplayHoldings();
+  let dm;
+  if(allocView==='sector')dm=groupBy(dh,h=>h.sector);
+  else if(allocView==='geo')dm=groupBy(dh,h=>h.geo);
+  else if(allocView==='currency')dm=groupBy(dh,h=>h.currency);
+  else dm=groupBy(dh,h=>h.ticker.replace('.TO',''));
+  makeDonut('alloc-chart','alloc-legend',dm,'62%');
+}
+
+function renderSleeveChart(){
+  const m=getActiveModel();
+  const pair=pairings.find(p=>p.equityId===m.id);
+  const eqH=holdings.filter(h=>h.modelId===m.id);
+  const fxH=pair?holdings.filter(h=>h.modelId===pair.fixedId):[];
+  const eqVal=eqH.reduce((s,h)=>{const st=computeStats(h);return s+(st?st.currentValCAD:0);},0);
+  const fxVal=fxH.reduce((s,h)=>{const st=computeStats(h);return s+(st?st.currentValCAD:0);},0);
+  const cash=m.id===6?SOLO_CASH:cashAUM();
+  const dm={};
+  if(eqVal>0)dm['Equity']=eqVal;
+  if(fxVal>0)dm['Fixed/Alts']=fxVal;
+  if(cash>0)dm['Cash']=cash;
+  makeDonut('sleeve-chart','sleeve-legend',dm,'58%');
+}
+
+function renderBreakdowns(){
+  const dh=getDisplayHoldings();
+  makeDonut('sector-chart','sector-legend',groupBy(dh,h=>h.sector),'58%');
+  makeDonut('geo-chart','geo-legend',groupBy(dh,h=>h.geo),'58%');
+  makeDonut('curr-chart','curr-legend',groupBy(dh,h=>h.currency),'58%');
+}
+
+function renderRebal(){
+  const dh=getDisplayHoldings();
+  const totalPortVal=getTotalPortfolioValue();
+  const isPair=hasFixed()&&activeSleeve==='pair';
+  let rows='',lastIsEquity=null;
+  dh.forEach(h=>{
+    const isEq=isEquityH(h);
+    if(isPair&&lastIsEquity===null&&isEq)rows+=`<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:4px 0">Equity Sleeve</div>`;
+    if(isPair&&lastIsEquity!==null&&isEq!==lastIsEquity)rows+=`<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:12px 0 4px;border-top:1px solid var(--border);margin-top:4px">Fixed / Alts Sleeve</div>`;
+    lastIsEquity=isEq;
+    const s=computeStats(h);
+    if(!s){rows+=`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:600;color:var(--navy)">${h.ticker.replace('.TO','')}</span><span style="font-size:11px;color:var(--text3)">${h.name}</span></div><span class="muted">no price</span></div>`;return;}
+    const targetWt=targetWeightInView(h);
+    const targetVal=targetWt*totalPortVal;
+    const diff=targetVal-s.currentValCAD;
+    if(Math.abs(diff)<300){rows+=`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:600;color:var(--navy)">${h.ticker.replace('.TO','')}</span><span style="font-size:11px;color:var(--text3)">${h.name}</span></div><span class="pill hold">Hold</span></div>`;return;}
+    const action=diff>0?'buy':'sell';
+    const diffShares=Math.abs(diff)/toCad(s.price,h.currency);
+    rows+=`<div class="rebal-row"><div class="rebal-left"><span style="font-size:12px;font-weight:600;color:var(--navy)">${h.ticker.replace('.TO','')}</span><span style="font-size:11px;color:var(--text3)">${h.name}</span></div><div class="rebal-right"><span class="rebal-amount">${action==='buy'?'+':'−'}${diffShares.toFixed(2)} shares</span><span class="rebal-amount">${fmtC(Math.abs(diff))}</span><span class="pill ${action}">${action==='buy'?'Buy':'Sell'}</span></div></div>`;
+  });
+  gi('rebal-content').innerHTML=rows||'<p style="font-size:13px;color:var(--text3);padding:8px 0">All positions within tolerance.</p>';
+}
+
+function renderAll(){
+  renderMetrics();renderHoldings();renderAllocChart();renderSleeveChart();renderBreakdowns();
+  if(rebalOpen)renderRebal();
+}
+
+// SORT
+function getCellSortVal(td){
+  const txt=(td.textContent||'').trim();
+  const num=parseFloat(txt.replace(/[$%,+\s]/g,'').replace('M','e6').replace('\u2212','-'));
+  return isNaN(num)?txt.toLowerCase():num;
+}
+function sortTable(col){
+  if(sortCol===col){sortAsc=!sortAsc;}else{sortCol=col;sortAsc=false;}
+  document.querySelectorAll('.sort-icon').forEach(el=>{
+    const c=+el.dataset.col;
+    el.textContent=c!==sortCol?'\u21C5':sortAsc?'\u2191':'\u2193';
+    el.style.color=c===sortCol?'var(--navy)':'var(--text3)';
+  });
+  const tbody=gi('holdings-body');
+  const dataRows=[...tbody.querySelectorAll('tr')].filter(r=>r.querySelectorAll('td').length>2);
+  const divRows=[...tbody.querySelectorAll('tr')].filter(r=>r.querySelectorAll('td').length<=2);
+  dataRows.sort((a,b)=>{
+    const tda=a.querySelectorAll('td')[col],tdb=b.querySelectorAll('td')[col];
+    if(!tda||!tdb)return 0;
+    const va=getCellSortVal(tda),vb=getCellSortVal(tdb);
+    if(typeof va==='number'&&typeof vb==='number')return sortAsc?va-vb:vb-va;
+    return sortAsc?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));
+  });
+  tbody.innerHTML='';divRows.forEach(d=>tbody.appendChild(d));dataRows.forEach(r=>tbody.appendChild(r));
+}
+
+// TOOL PANELS
+function toggleAllocEditor(){allocEditorOpen=!allocEditorOpen;gi('alloc-editor').style.display=allocEditorOpen?'block':'none';if(allocEditorOpen)syncAllocInputs();}
+function syncAllocInputs(){gi('inp-equity').value=(allocWeights.equity*100).toFixed(0);gi('inp-fixed').value=(allocWeights.fixed*100).toFixed(0);gi('inp-cash').value=(allocWeights.cash*100).toFixed(0);updateAllocTotal();}
+function onAllocInput(){const eq=parseFloat(gi('inp-equity').value)||0;const ca=parseFloat(gi('inp-cash').value)||0;gi('inp-fixed').value=Math.max(0,100-eq-ca).toFixed(0);updateAllocTotal();}
+function updateAllocTotal(){const eq=parseFloat(gi('inp-equity').value)||0;const fx=parseFloat(gi('inp-fixed').value)||0;const ca=parseFloat(gi('inp-cash').value)||0;const total=eq+fx+ca;const el=gi('alloc-total');el.textContent=total.toFixed(0)+'%';el.className='alloc-total '+(Math.abs(total-100)<0.01?'ok':'bad');}
+function applyAlloc(){const eq=parseFloat(gi('inp-equity').value)||0;const fx=parseFloat(gi('inp-fixed').value)||0;const ca=parseFloat(gi('inp-cash').value)||0;if(Math.abs(eq+fx+ca-100)>=0.01){alert('Must sum to 100%');return;}allocWeights={equity:eq/100,fixed:fx/100,cash:ca/100};if(aumEditorOpen)updateAumBreakdown(effectiveAUM());renderAll();}
+function resetAlloc(){allocWeights={equity:0.63,fixed:0.35,cash:0.02};syncAllocInputs();renderAll();}
+function toggleAumEditor(){aumEditorOpen=!aumEditorOpen;gi('aum-editor').style.display=aumEditorOpen?'block':'none';if(aumEditorOpen)syncAumInputs();}
+function syncAumInputs(){const aum=customAUM!==null?customAUM:TOTAL_AUM;gi('inp-aum').value=aum;updateAumBreakdown(aum);}
+function onAumInput(){updateAumBreakdown(parseFloat(gi('inp-aum').value)||TOTAL_AUM);}
+function updateAumBreakdown(aum){const f=n=>'$'+n.toLocaleString('en-CA',{minimumFractionDigits:0,maximumFractionDigits:0});gi('aum-equity').textContent=f(aum*allocWeights.equity);gi('aum-fixed').textContent=f(aum*allocWeights.fixed);gi('aum-cash').textContent=f(aum*allocWeights.cash);}
+function applyAum(){const aum=parseFloat(gi('inp-aum').value)||TOTAL_AUM;if(aum<1000){alert('AUM must be at least $1,000');return;}customAUM=aum;renderAll();}
+function resetAum(){customAUM=null;gi('inp-aum').value=TOTAL_AUM;updateAumBreakdown(TOTAL_AUM);renderAll();}
+function toggleWacCalc(){wacCalcOpen=!wacCalcOpen;gi('wac-calc').style.display=wacCalcOpen?'block':'none';}
+function calcWac(){
+  const cs=parseFloat(gi('wac-cur-shares').value),cp=parseFloat(gi('wac-cur-price').value);
+  const ns=parseFloat(gi('wac-new-shares').value),np=parseFloat(gi('wac-new-price').value);
+  const res=gi('wac-result');
+  if(isNaN(cs)||isNaN(cp)||cs<=0||cp<=0){res.style.display='none';return;}
+  if(isNaN(ns)||isNaN(np)||ns<=0||np<=0){res.style.display='block';res.innerHTML=`Current: <span class="hl">${cs.toLocaleString()} shares</span> at <span class="hl">$${fmt(cp,2)}</span> = <span class="hl">$${fmt(cs*cp)}</span>`;return;}
+  const total=cs+ns,val=cs*cp+ns*np,wac=val/total;
+  const chgPct=(np-cp)/cp*100;
+  const cls=np>cp?'neg':np<cp?'pos':'muted';
+  res.style.display='block';
+  res.innerHTML=`New blended cost basis: <span class="hl">$${fmt(wac,2)}</span> &nbsp;|&nbsp; Total shares: <span class="hl">${total.toLocaleString()}</span> &nbsp;|&nbsp; Total cost: <span class="hl">$${fmt(val)}</span><br>Buying <span class="${cls}">${np>cp?'above':'below'} current basis (${chgPct>=0?'+':''}${chgPct.toFixed(2)}%)</span> &nbsp;&rarr;&nbsp; Update sheet: <strong>purchase_price = $${fmt(wac,2)}</strong>`;
+}
+function toggleRebal(){rebalOpen=!rebalOpen;gi('rebal-section').style.display=rebalOpen?'block':'none';if(rebalOpen)renderRebal();}
+function switchModel(id){activeModelId=id;activeSleeve='pair';buildModelNav();buildSleeveTabs();renderAll();}
+function setSleeve(v){activeSleeve=v;buildSleeveTabs();renderAll();}
+function setAllocView(v){
+  allocView=v;
+  document.querySelectorAll('.vtab').forEach(t=>{const txt=t.textContent.trim().toLowerCase();t.classList.toggle('active',(v==='weight'&&txt==='weight')||(v==='sector'&&txt==='sector')||(v==='geo'&&txt==='geography')||(v==='currency'&&txt==='currency'));});
+  renderAllocChart();
+}
+
+// ── PORTFOLIO EDITOR ──────────────────────────────────────────────────────────
+let editorModelId=null, editorSleeve='equity', editorRows={};
+
+function initEditor(){
+  const sel=gi('editor-model-select');
+  sel.innerHTML=models.filter(m=>m.type==='equity').map(m=>`<option value="${m.id}">${m.name} — ${m.desc}</option>`).join('');
+  if(!editorModelId) editorModelId=models.find(m=>m.type==='equity')?.id||models[0]?.id;
+  sel.value=editorModelId;
+  loadEditorModel();
+}
+
+function loadEditorModel(){
+  editorModelId=+gi('editor-model-select').value;
+  editorRows={};
+  renderEditorTable();
+}
+
+function loadEditorSleeve(){
+  editorSleeve=gi('editor-sleeve-select').value;
+  renderEditorTable();
+}
+
+function getEditorHoldings(){
+  const pair=pairings.find(p=>p.equityId===editorModelId);
+  if(editorSleeve==='equity') return holdings.filter(h=>h.modelId===editorModelId);
+  if(editorSleeve==='fixed'&&pair) return holdings.filter(h=>h.modelId===pair.fixedId);
+  return holdings.filter(h=>h.modelId===editorModelId);
+}
+
+function getEditorSleeveAUM(){
+  const m=models.find(m=>m.id===editorModelId);
+  if(!m)return equityAUM();
+  if(m.id===6)return SOLO_AUM;
+  return editorSleeve==='equity'?equityAUM():fixedAUM();
+}
+
+function onWeightInput(ticker,val){
+  editorRows[ticker]=parseFloat(val)||0;
+  updateEditorTotals();
+}
+
+function updateEditorTotals(){
+  const dh=getEditorHoldings();
+  const total=dh.reduce((s,h)=>{
+    const w=editorRows[h.ticker]!==undefined?editorRows[h.ticker]:h.weight*100;
+    return s+w;
+  },0);
+  const cadCash=parseFloat(gi('cash-cad-pct')?.value)||0;
+  const usdCash=parseFloat(gi('cash-usd-pct')?.value)||0;
+  const grandTotal=total+cadCash+usdCash;
+  const el=gi('editor-total-pct');
+  const statusEl=gi('editor-total-status');
+  if(el){
+    el.textContent=grandTotal.toFixed(2)+'%';
+    el.style.color=Math.abs(grandTotal-100)<0.01?'var(--teal)':'var(--red)';
+  }
+  if(statusEl) statusEl.textContent=Math.abs(grandTotal-100)<0.01?'✓ Balanced':`${grandTotal>100?'+':''}${(grandTotal-100).toFixed(2)}% ${grandTotal>100?'over':'under'}`;
+  // Update $ and shares for each row
+  const sAUM=getEditorSleeveAUM();
+  dh.forEach(h=>{
+    const w=(editorRows[h.ticker]!==undefined?editorRows[h.ticker]:h.weight*100)/100;
+    const targetCAD=w*sAUM;
+    const pd=getPrice(h.ticker);
+    const priceCAD=pd?toCad(pd.price,h.currency):null;
+    const shares=priceCAD&&priceCAD>0?(targetCAD/priceCAD):null;
+    const tdVal=gi('ed-val-'+h.ticker);
+    const tdShares=gi('ed-shares-'+h.ticker);
+    const tdChg=gi('ed-chg-'+h.ticker);
+    if(tdVal) tdVal.textContent='$'+fmt(targetCAD);
+    if(tdShares) tdShares.textContent=shares?fmt(shares,2):'--';
+    if(tdChg){
+      const origW=h.weight*100;
+      const newW=editorRows[h.ticker]!==undefined?editorRows[h.ticker]:origW;
+      const diff=newW-origW;
+      tdChg.innerHTML=Math.abs(diff)<0.001?'<span class="muted">--</span>':`<span class="${diff>0?'pos':'neg'}">${diff>0?'+':''}${diff.toFixed(2)}%</span>`;
+    }
+  });
+  // Update cash display
+  const cadVal=gi('cash-cad-val'),usdVal=gi('cash-usd-val');
+  if(cadVal) cadVal.textContent='$'+fmt(cadCash/100*sAUM);
+  if(usdVal) usdVal.textContent='US$'+fmt(usdCash/100*sAUM/usdcadRate);
+}
+
+function onCashInput(){updateEditorTotals();}
+
+function renderEditorTable(){
+  const dh=getEditorHoldings();
+  const sAUM=getEditorSleeveAUM();
+  const m=models.find(m=>m.id===editorModelId);
+  gi('editor-holdings-title').textContent=(m?.name||'')+(editorSleeve==='equity'?' — Equity Sleeve':' — Fixed / Alts Sleeve');
+
+  // Summary bar
+  let totalCurrentVal=0,totalGain=0;
+  dh.forEach(h=>{const s=computeStats(h);if(s){totalCurrentVal+=s.currentValCAD;totalGain+=s.gainCAD;}});
+  gi('editor-summary').innerHTML=[
+    {l:'Sleeve AUM',v:'$'+fmt(sAUM)},
+    {l:'Current Value',v:'$'+fmt(totalCurrentVal)},
+    {l:'Total Return',v:fmtC(totalGain),pos:totalGain>=0},
+    {l:'Positions',v:dh.length},
+  ].map(c=>`<div class="metric"><div class="metric-label">${c.l}</div><div class="metric-value${c.pos===true?' pos':c.pos===false?' neg':''}">${c.v}</div></div>`).join('');
+
+  const rows=dh.map(h=>{
+    const pd=getPrice(h.ticker);
+    const priceStr=pd?`${h.currency==='USD'?'US$':'C$'}${fmt(pd.price,2)}`:'--';
+    const purchaseStr=pd?.purchasePrice?`${h.currency==='USD'?'US$':'C$'}${fmt(pd.purchasePrice,2)}`:'--';
+    const curW=h.weight*100;
+    const edW=editorRows[h.ticker]!==undefined?editorRows[h.ticker]:curW;
+    const targetCAD=(edW/100)*sAUM;
+    const priceCAD=pd?toCad(pd.price,h.currency):null;
+    const shares=priceCAD&&priceCAD>0?fmt(targetCAD/priceCAD,2):'--';
+    const diff=edW-curW;
+    const chgHTML=Math.abs(diff)<0.001?'<span class="muted">--</span>':`<span class="${diff>0?'pos':'neg'}">${diff>0?'+':''}${diff.toFixed(2)}%</span>`;
+    return`<tr>
+      <td><div class="tk">${h.ticker.replace('.TO','')}</div><div class="tk-name">${h.name}</div></td>
+      <td style="text-align:left;color:var(--text2)">${h.sector}</td>
+      <td>${priceStr}</td>
+      <td>${purchaseStr}</td>
+      <td class="muted">${curW.toFixed(2)}%</td>
+      <td><input type="number" value="${edW.toFixed(2)}" min="0" max="100" step="0.1"
+        onchange="onWeightInput('${h.ticker}',this.value)"
+        style="width:80px;background:var(--bg3);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;text-align:right;font-family:var(--sans);color:var(--text);outline:none"
+        onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'"></td>
+      <td id="ed-val-${h.ticker}">$${fmt(targetCAD)}</td>
+      <td id="ed-shares-${h.ticker}">${shares}</td>
+      <td id="ed-chg-${h.ticker}">${chgHTML}</td>
+    </tr>`;
+  }).join('');
+  gi('editor-body').innerHTML=rows;
+  updateEditorTotals();
+}
+
+// ── OAUTH ─────────────────────────────────────────────────────────────────────
+function initOAuth(){
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: OAUTH_CLIENT_ID,
+    scope: SHEETS_SCOPE,
+    callback: (resp) => {
+      if(resp.error){ showSignInStatus('Sign-in failed: '+resp.error, true); return; }
+      oauthToken = resp.access_token;
+      gi('signin-btn').style.display='none';
+      gi('signin-status').style.display='inline';
+      gi('signin-status').textContent='✓ Signed in — edits will write to sheet';
+      gi('signin-status').style.color='#3dd68c';
+    }
+  });
+}
+
+function signIn(){
+  if(!tokenClient){ showSignInStatus('OAuth not ready yet, try again in a moment', true); return; }
+  tokenClient.requestAccessToken();
+}
+
+function showSignInStatus(msg, isErr){
+  const el=gi('signin-status');
+  el.style.display='inline';
+  el.textContent=msg;
+  el.style.color=isErr?'#ff6b6b':'#3dd68c';
+}
+
+async function pushToSheet(){
+  const dh=getEditorHoldings();
+  const cadCash=parseFloat(gi('cash-cad-pct')?.value)||0;
+  const usdCash=parseFloat(gi('cash-usd-pct')?.value)||0;
+  const total=dh.reduce((s,h)=>{return s+(editorRows[h.ticker]!==undefined?editorRows[h.ticker]:h.weight*100);},0)+cadCash+usdCash;
+  const resultEl=gi('editor-push-result');
+  resultEl.style.display='block';
+
+  if(Math.abs(total-100)>=0.5){
+    resultEl.innerHTML=`<span style="color:var(--red)">&#10005; Cannot push — weights sum to ${total.toFixed(2)}% (must be 100%). Please adjust before pushing.</span>`;
+    return;
+  }
+
+  // Build summary of changes regardless
+  const changes=dh.filter(h=>editorRows[h.ticker]!==undefined&&Math.abs(editorRows[h.ticker]-h.weight*100)>0.01);
+
+  if(!oauthToken){
+    resultEl.innerHTML=`<span style="color:var(--gold)">&#9888; Not signed in — click "Sign In to Edit" in the top bar to enable direct sheet writes.</span><br><br>
+    <strong>Pending changes (apply manually if needed):</strong><br>
+    ${changes.length?changes.map(h=>`${h.ticker}: ${(h.weight*100).toFixed(2)}% &rarr; ${editorRows[h.ticker].toFixed(2)}%`).join('<br>'):'No changes.'}`;
+    return;
+  }
+
+  if(!changes.length){
+    resultEl.innerHTML='<span style="color:var(--text3)">No changes to push.</span>';
+    return;
+  }
+
+  resultEl.innerHTML='<span style="color:var(--gold)">&#8635; Writing changes to Google Sheet...</span>';
+
+  try {
+    // Read Holdings tab to find row numbers for each ticker
+    const readUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Holdings!A1:E500`;
+    const readResp=await fetch(readUrl,{headers:{Authorization:'Bearer '+oauthToken}});
+    if(!readResp.ok) throw new Error('Could not read Holdings tab: '+readResp.status);
+    const readData=await readResp.json();
+    const rows=readData.values||[];
+
+    // Find header row to locate target_weight column
+    const header=rows[0].map(x=>x.toLowerCase().trim());
+    const weightCol=header.indexOf('target_weight');
+    const tickerCol=header.indexOf('ticker');
+    const modelCol=header.indexOf('model_id');
+    if(weightCol===-1||tickerCol===-1) throw new Error('Could not find target_weight or ticker column in Holdings tab');
+
+    // Build batch update — find each changed ticker's row
+    const pair=pairings.find(p=>p.equityId===editorModelId);
+    const fixedModelId=pair?pair.fixedId:null;
+    const validModelIds=[editorModelId];
+    if(editorSleeve==='fixed'&&fixedModelId) validModelIds[0]=fixedModelId;
+
+    const batchData=[];
+    changes.forEach(h=>{
+      const newWeight=(editorRows[h.ticker]/100).toFixed(4);
+      // Find the row for this ticker in the correct model
+      for(let i=1;i<rows.length;i++){
+        const rowTicker=(rows[i][tickerCol]||'').trim();
+        const rowModel=+rows[i][modelCol];
+        if(rowTicker===h.ticker&&validModelIds.includes(rowModel)){
+          // Sheet row = i+1 (1-indexed), column = weightCol+1
+          const colLetter=String.fromCharCode(65+weightCol);
+          batchData.push({
+            range:`Holdings!${colLetter}${i+1}`,
+            values:[[newWeight]]
+          });
+          break;
+        }
+      }
+    });
+
+    if(!batchData.length) throw new Error('Could not match any tickers to Holdings rows');
+
+    // Batch update
+    const writeUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values:batchUpdate`;
+    const writeResp=await fetch(writeUrl,{
+      method:'POST',
+      headers:{Authorization:'Bearer '+oauthToken,'Content-Type':'application/json'},
+      body:JSON.stringify({valueInputOption:'USER_ENTERED',data:batchData})
+    });
+    if(!writeResp.ok){
+      const err=await writeResp.json();
+      throw new Error(err.error?.message||'Write failed: '+writeResp.status);
+    }
+
+    resultEl.innerHTML=`<span style="color:var(--teal)">&#10003; Successfully wrote ${batchData.length} changes to Google Sheet.</span><br><br>
+    <strong>Updated:</strong><br>${changes.map(h=>`${h.ticker}: ${(h.weight*100).toFixed(2)}% &rarr; ${editorRows[h.ticker].toFixed(2)}%`).join('<br>')}
+    <br><br><button class="btn teal sm" onclick="refreshAll()">&#8635; Refresh Dashboard</button>`;
+
+    // Update local holdings so UI reflects new weights immediately
+    changes.forEach(h=>{
+      const holding=holdings.find(x=>x.ticker===h.ticker&&validModelIds.includes(x.modelId));
+      if(holding) holding.weight=editorRows[h.ticker]/100;
+    });
+    editorRows={};
+
+  } catch(e) {
+    resultEl.innerHTML=`<span style="color:var(--red)">&#10005; Error: ${e.message}</span>`;
+  }
+}
+
+// ── COMPARISON PAGE ───────────────────────────────────────────────────────────
+function loadCompare(){
+  const sel=gi('compare-model-select');
+  if(sel.innerHTML===''){
+    sel.innerHTML=models.filter(m=>m.type==='equity').map(m=>`<option value="${m.id}">${m.name} — ${m.desc}</option>`).join('');
+  }
+  const modelId=+sel.value||(models.find(m=>m.type==='equity')?.id||models[0]?.id);
+  sel.value=modelId;
+
+  const pair=pairings.find(p=>p.equityId===modelId);
+  const eqH=holdings.filter(h=>h.modelId===modelId);
+  const fxH=pair?holdings.filter(h=>h.modelId===pair.fixedId):[];
+  const allH=[...eqH,...fxH];
+
+  // Current weights = from sheet
+  function currentGroupBy(arr,keyFn){
+    const m={};
+    arr.forEach(h=>{m[keyFn(h)]=(m[keyFn(h)]||0)+h.weight;});
+    return m;
+  }
+
+  // Proposed weights = editor changes if any, else same as current
+  function proposedGroupBy(arr,keyFn){
+    const m={};
+    arr.forEach(h=>{
+      const w=editorRows[h.ticker]!==undefined?editorRows[h.ticker]/100:h.weight;
+      m[keyFn(h)]=(m[keyFn(h)]||0)+w;
+    });
+    return m;
+  }
+
+  const curSector=currentGroupBy(allH,h=>h.sector);
+  const newSector=proposedGroupBy(allH,h=>h.sector);
+  const curGeo=currentGroupBy(allH,h=>h.geo);
+  const newGeo=proposedGroupBy(allH,h=>h.geo);
+  const curCurr=currentGroupBy(allH,h=>h.currency);
+  const newCurr=proposedGroupBy(allH,h=>h.currency);
+
+  makeDonut('cmp-cur-sector','cmp-cur-sector-legend',curSector,'55%');
+  makeDonut('cmp-new-sector','cmp-new-sector-legend',newSector,'55%');
+  makeDonut('cmp-cur-geo','cmp-cur-geo-legend',curGeo,'55%');
+  makeDonut('cmp-new-geo','cmp-new-geo-legend',newGeo,'55%');
+  makeDonut('cmp-cur-curr','cmp-cur-curr-legend',curCurr,'55%');
+  makeDonut('cmp-new-curr','cmp-new-curr-legend',newCurr,'55%');
+
+  // Build comparison table
+  const allKeys=new Set([...Object.keys(curSector),...Object.keys(newSector),...Object.keys(curGeo),...Object.keys(newGeo),...Object.keys(curCurr),...Object.keys(newCurr)]);
+  let tableRows='';
+  [['Sector',curSector,newSector],['Geography',curGeo,newGeo],['Currency',curCurr,newCurr]].forEach(([cat,cur,neu])=>{
+    const keys=[...new Set([...Object.keys(cur),...Object.keys(neu)])].sort();
+    keys.forEach((k,i)=>{
+      const cv=(cur[k]||0)*100,nv=(neu[k]||0)*100,diff=nv-cv;
+      tableRows+=`<tr>
+        ${i===0?`<td rowspan="${keys.length}" style="font-weight:600;color:var(--navy);vertical-align:top;border-right:2px solid var(--border)">${cat}</td>`:''}
+        <td>${k}</td>
+        <td class="muted">${cv.toFixed(2)}%</td>
+        <td>${nv.toFixed(2)}%</td>
+        <td class="${diff>0.005?'pos':diff<-0.005?'neg':'muted'}">${Math.abs(diff)<0.005?'--':(diff>0?'+':'')+diff.toFixed(2)+'%'}</td>
+      </tr>`;
+    });
+  });
+  gi('compare-body').innerHTML=tableRows||'<tr><td colspan="5" class="muted">No data</td></tr>';
+}
+
+// REFRESH
+async function refreshAll(){
+  showMain(false);showStatus(true);gi('err-area').innerHTML='';
+  try{
+    await loadAll();
+    buildModelNav();buildSleeveTabs();
+    showStatus(false);showMain(true);renderAll();
+    gi('updated-time').textContent='Updated '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
+    gi('footnote').textContent='Prices via Google Finance  ·  USD/CAD '+usdcadRate.toFixed(4)+'  ·  '+new Date().toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    if(currentPage==='editor')initEditor();
+    if(currentPage==='compare')loadCompare();
+  }catch(e){showStatus(false);gi('err-area').innerHTML='<div class="err-banner">Error: '+e.message+'</div>';}
+}
+
+async function init(){
+  showStatus(true);
+  try{
+    await loadAll();
+    if(!models.length)throw new Error('No models found — check sheet tab is named "Models"');
+    activeModelId=models.find(m=>m.type==='equity')?.id||models[0].id;
+    buildModelNav();buildSleeveTabs();
+    showStatus(false);showMain(true);renderAll();
+    gi('updated-time').textContent='Updated '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
+    gi('footnote').textContent='Prices via Google Finance  ·  USD/CAD '+usdcadRate.toFixed(4)+'  ·  '+new Date().toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  }catch(e){
+    showStatus(false);
+    gi('err-area').innerHTML='<div class="err-banner">Failed to load: '+e.message+'</div>';
+  }
+}
+init();
+// Initialize OAuth token client once Google Identity Services loads
+window.addEventListener('load', () => {
+  const checkGIS = setInterval(() => {
+    if(window.google && google.accounts) {
+      initOAuth();
+      clearInterval(checkGIS);
+    }
+  }, 200);
+});
+</script>
+</body>
+</html>
