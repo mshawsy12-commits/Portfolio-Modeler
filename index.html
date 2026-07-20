@@ -160,6 +160,31 @@
   .btn.gold{background:var(--bg2);color:var(--gold);border-color:var(--gold)}
   .btn.gold:hover{background:var(--gold-dim)}
   .btn.sm{padding:5px 12px;font-size:11px}
+  .status-hit{color:var(--teal);font-weight:600;font-size:11px}
+  .signals-bar{background:var(--navy);padding:10px 32px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08)}
+  .signal-card{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:8px 14px;min-width:180px;position:relative;cursor:default}
+  .signal-card.bullish{border-color:rgba(61,214,140,0.3);background:rgba(61,214,140,0.06)}
+  .signal-card.caution{border-color:rgba(184,134,11,0.4);background:rgba(184,134,11,0.07)}
+  .signal-card.bearish{border-color:rgba(192,57,43,0.4);background:rgba(192,57,43,0.07)}
+  .signal-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .signal-dot.bullish{background:#3dd68c}
+  .signal-dot.caution{background:#f5a623}
+  .signal-dot.bearish{background:#ff6b6b}
+  .signal-name{font-size:11px;font-weight:600;color:rgba(255,255,255,0.9);font-family:var(--sans)}
+  .signal-price{font-size:12px;color:rgba(255,255,255,0.7);font-family:var(--mono)}
+  .signal-ma{font-size:10px;color:rgba(255,255,255,0.4);font-family:var(--mono);margin-top:1px}
+  .signal-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.04em;margin-left:auto}
+  .signal-badge.golden{background:rgba(184,134,11,0.3);color:#f5a623}
+  .signal-badge.death{background:rgba(192,57,43,0.3);color:#ff6b6b}
+  .signal-badge.above{background:rgba(61,214,140,0.2);color:#3dd68c}
+  .signal-badge.below{background:rgba(192,57,43,0.2);color:#ff6b6b}
+  .signal-badge.dev{background:rgba(74,158,255,0.2);color:#4a9eff}
+  .signals-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;margin-right:4px}
+  .signals-loading{font-size:11px;color:rgba(255,255,255,0.4);font-family:var(--mono);padding:4px 0}
+  .status-near{color:var(--gold);font-weight:600;font-size:11px}
+  .status-watching{color:var(--text3);font-size:11px}
+  .target-bar-bg{height:5px;border-radius:3px;background:var(--bg4);width:80px;display:inline-block;vertical-align:middle;overflow:hidden;margin-left:6px}
+  .target-bar-fill{height:5px;border-radius:3px}
   .btn.danger{background:var(--red-dim);color:var(--red);border-color:rgba(192,57,43,0.2)}
   .btn.danger:hover{background:rgba(192,57,43,0.15)}
   .new-row td{background:rgba(26,107,90,0.04);border-left:3px solid var(--teal)}
@@ -177,8 +202,8 @@
   .row-actions td{padding:10px 16px!important}
   .row-actions-inner{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
   .row-action-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:6px 14px;border-radius:var(--radius);border:1.5px solid;cursor:pointer;font-family:var(--sans);transition:all .15s}
-  .row-action-remove{background:var(--red-dim);color:var(--red);border-color:rgba(192,57,43,0.25)}
-  .row-action-remove:hover{background:rgba(192,57,43,0.15)}
+  .row-action-remove{background:var(--red-dim);color:var(--red);border-color:rgba(192,57,43,0.25);border-radius:var(--radius);padding:8px 18px;font-size:13px;font-weight:600;letter-spacing:.01em}
+  .row-action-remove:hover{background:rgba(192,57,43,0.18);box-shadow:0 2px 8px rgba(192,57,43,0.15)}
   .replace-form{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;flex:1}
   .replace-form-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
   tr.expanded-row td{background:var(--bg3)!important;font-weight:600;color:var(--navy)!important}
@@ -200,10 +225,17 @@
       <button class="nav-link active" onclick="showPage('dashboard')">Dashboard</button>
       <button class="nav-link" onclick="showPage('editor')">Portfolio Editor</button>
       <button class="nav-link" onclick="showPage('compare')">Comparison</button>
+      <button class="nav-link" onclick="showPage('watchlist')">Watchlist</button>
       <button class="btn sm primary" onclick="refreshAll()" style="margin-left:8px">&#8635; Refresh</button>
       <button id="signin-btn" class="btn sm" onclick="signIn()" style="margin-left:4px;background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.2)">&#9679; Sign In to Edit</button>
       <span id="signin-status" style="font-size:11px;color:rgba(255,255,255,0.5);display:none"></span>
     </div>
+  </div>
+
+  <!-- MARKET SIGNALS BAR -->
+  <div class="signals-bar" id="signals-bar">
+    <span class="signals-label">Market Signals</span>
+    <span class="signals-loading" id="signals-loading">Loading...</span>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -449,6 +481,71 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- PAGE 4: WATCHLIST                                               -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div id="page-watchlist" class="content" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+      <div>
+        <h1 style="font-family:var(--serif);font-size:24px;font-weight:500;color:var(--navy);margin-bottom:4px">Watchlist</h1>
+        <p style="font-size:13px;color:var(--text3)">Stocks on your radar with price targets and alerts. Updates with your daily Google Finance prices.</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn primary" onclick="requestNotificationPermission()">&#128276; Enable Browser Alerts</button>
+        <button class="btn" onclick="refreshWatchlist()">&#8635; Refresh</button>
+      </div>
+    </div>
+
+    <div id="watchlist-status" class="status" style="display:none"><div class="spinner"></div><span>Loading watchlist...</span></div>
+    <div id="watchlist-alert-banner" style="display:none" class="tool-result mb"></div>
+
+    <!-- Notification permission banner -->
+    <div id="notif-banner" style="display:none;background:var(--gold-dim);border:1px solid rgba(184,134,11,0.2);border-radius:var(--radius);padding:12px 16px;font-size:12px;color:var(--gold);margin-bottom:16px">
+      &#9888; Browser notifications are not enabled. Click "Enable Browser Alerts" to get notified when stocks hit their targets.
+    </div>
+
+    <div class="card mb">
+      <div class="card-title">Watchlist — Price Targets</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th style="text-align:left">Ticker</th>
+            <th style="text-align:left">Name</th>
+            <th>Current Price</th>
+            <th>Target Type</th>
+            <th>Target Price</th>
+            <th>200-Day MA</th>
+            <th>% to Target</th>
+            <th>Status</th>
+            <th style="text-align:left">Notes</th>
+          </tr></thead>
+          <tbody id="watchlist-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Add to watchlist form -->
+    <div class="card mb">
+      <div class="card-title">Add to Watchlist</div>
+      <div class="form-row">
+        <div class="form-field"><label>Ticker</label><input id="wl-ticker" placeholder="e.g. AAPL" style="width:90px" oninput="this.value=this.value.toUpperCase()"></div>
+        <div class="form-field"><label>Name</label><input id="wl-name" placeholder="Company name" style="width:150px"></div>
+        <div class="form-field"><label>Target Type</label>
+          <select id="wl-target-type" style="width:110px;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:6px 10px;font-family:var(--sans);font-size:12px;color:var(--text);outline:none" onchange="toggleWlTargetInput()">
+            <option value="specific">Specific Price</option>
+            <option value="200dma">200-Day MA</option>
+          </select>
+        </div>
+        <div class="form-field" id="wl-price-field"><label>Target Price</label><input id="wl-price" type="number" min="0" step="0.01" placeholder="e.g. 200.00" style="width:110px"></div>
+        <div class="form-field"><label>Notes</label><input id="wl-notes" placeholder="Optional notes" style="width:160px"></div>
+        <div class="form-field" style="justify-content:flex-end">
+          <button class="btn teal" onclick="addToWatchlist()">+ Add</button>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text3);margin-top:10px">&#9432; Add the ticker to your Google Sheet watchlist tab to persist it. Items added here are session-only until saved to the sheet.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
   <!-- PAGE 3: COMPARISON                                              -->
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <div id="page-compare" class="content" style="display:none">
@@ -543,6 +640,10 @@ let allocEditorOpen=false, aumEditorOpen=false, wacCalcOpen=false;
 let sortCol=-1, sortAsc=true;
 let customAUM=null;
 let editorChanges={}; // stores {ticker: newWeight} for editor page
+let watchlistData=[]; // loaded from sheet
+let signalsData=[]; // [{ticker,name,type,alert50,alert200,alertCross,devPct,current,ma50,ma200}]
+let sessionWatchlist=[]; // items added this session before sheet push
+let notifPermission='default';
 let editorNewHoldings=[]; // new holdings added in editor [{ticker,name,sector,geo,currency,weight}]
 let editorCashCAD=0; // CAD cash % in editor
 let editorCashUSD=0; // USD cash % in editor
@@ -571,10 +672,14 @@ function showPage(page){
     gi('page-'+p).style.display=p===page?'block':'none';
   });
   document.querySelectorAll('.nav-link').forEach(el=>{
-    el.classList.toggle('active',el.textContent.toLowerCase().includes(page==='dashboard'?'dash':page==='editor'?'edit':'comp'));
+    const t=el.textContent.toLowerCase();
+    el.classList.toggle('active',
+      (page==='dashboard'&&t.includes('dash'))||(page==='editor'&&t.includes('edit'))||
+      (page==='compare'&&t.includes('comp'))||(page==='watchlist'&&t.includes('watch')));
   });
   if(page==='editor') initEditor();
   if(page==='compare') loadCompare();
+  if(page==='watchlist') refreshWatchlist();
 }
 
 // SHEET FETCHING
@@ -1069,7 +1174,15 @@ function toggleRowExpand(ticker){
     <div class="row-actions-inner">
       <div>
         <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">${ticker.replace('.TO','')} — ${h.name||''}</div>
-        <button class="row-action-remove" onclick="removeHolding('${ticker}')">&#10005; Remove this holding</button>
+        <button class="row-action-remove" onclick="removeHolding('${ticker}')" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 5.5L8.5 8.5M8.5 5.5L5.5 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="1" y="1" width="12" height="12" rx="3" stroke="currentColor" stroke-width="1.5"/></svg> Remove Holding</button>
+      </div>
+      <div style="min-width:160px">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Change Date</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Backdate this change for the log</div>
+        <input type="date" id="row-date-${ticker}" value="${new Date().toISOString().split('T')[0]}"
+          style="background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:6px 10px;font-family:var(--sans);font-size:12px;color:var(--text);outline:none;width:150px"
+          onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'">
+        <div style="font-size:10px;color:var(--text3);margin-top:4px">Used when pushing to change log</div>
       </div>
       <div style="flex:1;min-width:300px">
         <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Replace with new holding</div>
@@ -1389,8 +1502,13 @@ async function pushToSheet(){
     const colLetter=col=>col<26?String.fromCharCode(65+col):'A'+String.fromCharCode(65+col-26);
     const weightColLetter=colLetter(weightCol);
     const now=new Date();
-    const dateStr=now.toLocaleDateString('en-CA');
     const timeStr=now.toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
+    // Per-row dates — use row-specific backdated date if set, else today
+    function getRowDate(ticker){
+      const el=gi('row-date-'+ticker);
+      return el&&el.value?el.value:now.toLocaleDateString('en-CA');
+    }
+    const dateStr=now.toLocaleDateString('en-CA'); // default fallback
 
     const batchData=[];
     const logRows=[];
@@ -1410,7 +1528,7 @@ async function pushToSheet(){
           const oldShares=priceCAD&&oldW>0?((oldW*sAUM)/priceCAD):0;
           const newShares=priceCAD&&newW>0?((newW*sAUM)/priceCAD):0;
           const shareChg=newShares-oldShares;
-          logRows.push([dateStr,timeStr,h.ticker,h.name,'weight_change',(oldW*100).toFixed(2)+'%',(newW*100).toFixed(2)+'%',((newW-oldW)*100).toFixed(2)+'%',price,shareChg.toFixed(2),editorSleeve]);
+          logRows.push([getRowDate(h.ticker),timeStr,h.ticker,h.name,'weight_change',(oldW*100).toFixed(2)+'%',(newW*100).toFixed(2)+'%',((newW-oldW)*100).toFixed(2)+'%',price,shareChg.toFixed(2),editorSleeve]);
           break;
         }
       }
@@ -1424,7 +1542,7 @@ async function pushToSheet(){
           batchData.push({range:`Holdings!${weightColLetter}${i+1}`,values:[['0']]});
           const h=baseHoldings.find(x=>x.ticker===ticker);
           const pd=getPrice(ticker);
-          logRows.push([dateStr,timeStr,ticker,h?.name||ticker,'removed',(h?.weight*100||0).toFixed(2)+'%','0%','',(pd?.price||''),'','Please delete this row from Holdings tab manually']);
+          logRows.push([getRowDate(ticker),timeStr,ticker,h?.name||ticker,'removed',(h?.weight*100||0).toFixed(2)+'%','0%','',(pd?.price||''),'','Please delete this row from Holdings tab manually']);
           break;
         }
       }
@@ -1439,7 +1557,7 @@ async function pushToSheet(){
         const pd=getPrice(h.ticker);
         const priceCAD=pd?toCad(pd.price,h.currency):null;
         const shares=priceCAD&&h.weight>0?((h.weight*getEditorSleeveAUM())/priceCAD):0;
-        logRows.push([dateStr,timeStr,h.ticker,h.name,'added','0%',(h.weight*100).toFixed(2)+'%','',(pd?.price||''),shares.toFixed(2),editorSleeve]);
+        logRows.push([now.toLocaleDateString('en-CA'),timeStr,h.ticker,h.name,'added','0%',(h.weight*100).toFixed(2)+'%','',(pd?.price||''),shares.toFixed(2),editorSleeve]);
       });
     }
 
@@ -1579,10 +1697,265 @@ function loadCompare(){
 }
 
 // REFRESH
-async function refreshAll(){
+// ── WATCHLIST ─────────────────────────────────────────────────────────────────
+async function loadWatchlist(){
+  try{
+    const rows=await fetchRange('watchlist!A1:G50');
+    if(!rows.length){watchlistData=[];return;}
+    const h=rows[0].map(x=>x.toLowerCase().trim());
+    watchlistData=rows.slice(1).filter(r=>r[0]).map(r=>{
+      const o={};h.forEach((k,i)=>o[k]=(r[i]||'').trim());
+      return{
+        ticker:o.ticker,name:o.name,
+        targetType:o.target_type||'specific',
+        targetPrice:parseFloat(o.target_price)||null,
+        dma200:parseFloat(o['200dma'])||null,
+        notes:o.notes||''
+      };
+    });
+  } catch(e){ watchlistData=[]; }
+}
+
+function getWatchlistTarget(item){
+  if(item.targetType==='200dma') return item.dma200;
+  return item.targetPrice;
+}
+
+function renderWatchlist(){
+  const all=[...watchlistData,...sessionWatchlist];
+  if(!all.length){
+    gi('watchlist-body').innerHTML='<tr><td colspan="9" class="muted" style="text-align:center;padding:24px">No watchlist items. Add stocks above or in your Google Sheet watchlist tab.</td></tr>';
+    return;
+  }
+  const triggered=[];
+  const rows=all.map(item=>{
+    const pd=getPrice(item.ticker);
+    const current=pd?pd.price:null;
+    const target=getWatchlistTarget(item);
+    const dma=item.dma200;
+    const currStr=current?(pd.currency==='USD'?'US$':'C$')+fmt(current,2):'--';
+    const targetStr=target?(pd?.currency==='USD'?'US$':'C$')+fmt(target,2):'--';
+    const dmaStr=dma?(pd?.currency==='USD'?'US$':'C$')+fmt(dma,2):'--';
+    let pctToTarget=null,statusHTML='<span class="status-watching">Watching</span>',barHTML='';
+    if(current&&target){
+      pctToTarget=((target-current)/current)*100;
+      const absPct=Math.abs(pctToTarget);
+      const isAbove=current>=target;
+      if(isAbove){
+        statusHTML='<span class="status-hit">&#10003; At / Above Target</span>';
+        triggered.push(item);
+      } else if(absPct<=2){
+        statusHTML='<span class="status-near">&#9650; Within 2%</span>';
+      } else if(absPct<=5){
+        statusHTML='<span class="status-near" style="color:var(--amber)">&#9650; Within 5%</span>';
+      }
+      const progress=Math.min(100,Math.max(0,100-(pctToTarget)));
+      barHTML=`<div class="target-bar-bg"><div class="target-bar-fill" style="width:${progress}%;background:${isAbove?'var(--teal)':absPct<=2?'var(--gold)':'var(--navy)'}"></div></div>`;
+    }
+    const pctStr=pctToTarget!==null?`<span class="${pctToTarget<=0?'pos':'neg'}">${pctToTarget>=0?'+':''}${pctToTarget.toFixed(2)}%</span>${barHTML}`:'--';
+    return`<tr>
+      <td><div class="tk">${item.ticker.replace('.TO','')}</div></td>
+      <td style="text-align:left">${item.name}</td>
+      <td>${currStr}</td>
+      <td style="text-align:left"><span style="font-size:11px;background:var(--bg3);padding:2px 8px;border-radius:4px;color:var(--text3)">${item.targetType==='200dma'?'200-Day MA':'Specific'}</span></td>
+      <td>${targetStr}</td>
+      <td>${dmaStr}</td>
+      <td>${pctStr}</td>
+      <td>${statusHTML}</td>
+      <td style="text-align:left;font-size:11px;color:var(--text3)">${item.notes||'--'}</td>
+    </tr>`;
+  }).join('');
+  gi('watchlist-body').innerHTML=rows;
+
+  // Browser notifications for triggered items
+  if(triggered.length&&notifPermission==='granted'){
+    triggered.forEach(item=>{
+      const pd=getPrice(item.ticker);
+      const price=pd?fmt(pd.price,2):'';
+      const target=fmt(getWatchlistTarget(item),2);
+      new Notification(`&#128276; ${item.ticker} hit target!`,{
+        body:`${item.name} is now at ${pd?.currency==='USD'?'US$':'C$'}${price} — target was ${pd?.currency==='USD'?'US$':'C$'}${target}`,
+        icon:'https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png'
+      });
+    });
+  }
+
+  // Alert banner
+  if(triggered.length){
+    gi('watchlist-alert-banner').style.display='block';
+    gi('watchlist-alert-banner').innerHTML=`<span style="color:var(--teal);font-weight:600">&#128276; ${triggered.length} stock${triggered.length>1?'s have':' has'} hit target: ${triggered.map(i=>i.ticker).join(', ')}</span>`;
+  } else {
+    gi('watchlist-alert-banner').style.display='none';
+  }
+}
+
+// ── MARKET SIGNALS ────────────────────────────────────────────────────────────
+async function loadSignals(){
+  try{
+    const [sigRows, priceRows] = await Promise.all([
+      fetchRange('Signals!A1:H30'),
+      fetchRange('Signals_prices!A1:D20'),
+    ]);
+    if(!sigRows.length){ signalsData=[]; return; }
+
+    // Parse signals config
+    const sh=sigRows[0].map(x=>x.toLowerCase().trim());
+    const sigConfig=sigRows.slice(1).filter(r=>r[0]).map(r=>{
+      const o={};sh.forEach((k,i)=>o[k]=(r[i]||'').trim());
+      return{
+        ticker:o.ticker,name:o.name,type:o.type||'stock',
+        alert50:(o.alert_50||'').toUpperCase()==='TRUE',
+        alert200:(o.alert_200||'').toUpperCase()==='TRUE',
+        alertCross:(o.alert_cross||'').toUpperCase()==='TRUE',
+        devPct:parseFloat(o.deviation_pct)||5,
+        notes:o.notes||''
+      };
+    });
+
+    // Parse signals prices
+    const ph=priceRows[0]?.map(x=>x.toLowerCase().trim())||['ticker','current','ma50','ma200'];
+    const priceMap={};
+    priceRows.slice(1).forEach(r=>{
+      const ticker=(r[0]||'').trim();
+      if(!ticker)return;
+      priceMap[ticker]={
+        current:parseFloat(r[1])||null,
+        ma50:parseFloat(r[2])||null,
+        ma200:parseFloat(r[3])||null
+      };
+    });
+
+    signalsData=sigConfig.map(s=>({
+      ...s,
+      ...( priceMap[s.ticker]||{current:null,ma50:null,ma200:null} )
+    }));
+  } catch(e){ signalsData=[]; Logger?.log?.('Signal load error: '+e.message); }
+}
+
+function getSignalStatus(s){
+  if(!s.current||!s.ma50||!s.ma200) return 'unknown';
+  if(s.current>s.ma50&&s.current>s.ma200) return 'bullish';
+  if(s.current<s.ma200) return 'bearish';
+  return 'caution'; // between ma50 and ma200
+}
+
+function renderSignalsBar(){
+  const bar=gi('signals-bar');
+  const loading=gi('signals-loading');
+  if(!signalsData.length){
+    if(loading) loading.textContent='No signals configured';
+    return;
+  }
+  if(loading) loading.style.display='none';
+
+  // Remove old signal cards
+  bar.querySelectorAll('.signal-card').forEach(el=>el.remove());
+
+  signalsData.forEach(s=>{
+    const status=getSignalStatus(s);
+    const card=document.createElement('div');
+    card.className=`signal-card ${status}`;
+
+    let badges='';
+    if(s.current&&s.ma50&&s.ma200){
+      // Golden / death cross
+      if(s.ma50>s.ma200) badges+=`<span class="signal-badge golden">GOLDEN X</span>`;
+      else badges+=`<span class="signal-badge death">DEATH X</span>`;
+
+      // Above/below 200
+      const dev=((s.current-s.ma200)/s.ma200)*100;
+      if(Math.abs(dev)>=s.devPct){
+        badges+=`<span class="signal-badge dev">${dev>=0?'+':''}${dev.toFixed(1)}% 200d</span>`;
+      }
+    }
+
+    const priceStr=s.current?s.current.toFixed(2):'--';
+    const ma50Str=s.ma50?s.ma50.toFixed(2):'--';
+    const ma200Str=s.ma200?s.ma200.toFixed(2):'--';
+
+    card.innerHTML=`
+      <div class="signal-dot ${status}"></div>
+      <div>
+        <div class="signal-name">${s.name}</div>
+        <div class="signal-price">${priceStr}</div>
+        <div class="signal-ma">50d ${ma50Str} · 200d ${ma200Str}</div>
+      </div>
+      ${badges}`;
+
+    // Tooltip on hover showing full details
+    card.title=`${s.name} (${s.ticker})\nCurrent: ${priceStr}\n50-Day MA: ${ma50Str}\n200-Day MA: ${ma200Str}\nStatus: ${status.charAt(0).toUpperCase()+status.slice(1)}`;
+    bar.appendChild(card);
+  });
+
+  // Check for alerts and show browser notification if needed
+  checkSignalAlerts();
+}
+
+function checkSignalAlerts(){
+  const alerts=[];
+  signalsData.forEach(s=>{
+    if(!s.current||!s.ma50||!s.ma200) return;
+    const dev=((s.current-s.ma200)/s.ma200)*100;
+    if(s.alert200&&Math.abs(s.current-s.ma200)/s.ma200<0.005)
+      alerts.push(`${s.name} is crossing its 200-day MA (${s.ma200.toFixed(2)})`);
+    if(s.alert50&&Math.abs(s.current-s.ma50)/s.ma50<0.005)
+      alerts.push(`${s.name} is crossing its 50-day MA (${s.ma50.toFixed(2)})`);
+    if(s.devPct>0&&Math.abs(dev)>=s.devPct)
+      alerts.push(`${s.name} is ${Math.abs(dev).toFixed(1)}% ${dev>0?'above':'below'} its 200-day MA`);
+  });
+  if(alerts.length&&notifPermission==='granted'){
+    alerts.forEach(msg=>{
+      new Notification('Beacon Portfolios — Market Signal',{body:msg});
+    });
+  }
+}
+
+async function refreshWatchlist(){
+  gi('watchlist-status').style.display='flex';
+  await loadWatchlist();
+  gi('watchlist-status').style.display='none';
+  renderWatchlist();
+  checkNotifPermission();
+}
+
+function checkNotifPermission(){
+  if(!('Notification' in window)){gi('notif-banner').style.display='block';return;}
+  notifPermission=Notification.permission;
+  gi('notif-banner').style.display=notifPermission==='granted'?'none':'block';
+}
+
+function requestNotificationPermission(){
+  if(!('Notification' in window)){alert('Browser notifications not supported.');return;}
+  Notification.requestPermission().then(p=>{
+    notifPermission=p;
+    checkNotifPermission();
+    if(p==='granted'){
+      new Notification('Beacon Portfolios',{body:'Watchlist alerts are now enabled.'});
+    }
+  });
+}
+
+function toggleWlTargetInput(){
+  const type=gi('wl-target-type')?.value;
+  if(gi('wl-price-field')) gi('wl-price-field').style.display=type==='200dma'?'none':'flex';
+}
+
+function addToWatchlist(){
+  const ticker=(gi('wl-ticker')?.value||'').trim().toUpperCase();
+  const name=(gi('wl-name')?.value||'').trim();
+  const targetType=gi('wl-target-type')?.value||'specific';
+  const targetPrice=parseFloat(gi('wl-price')?.value)||null;
+  const notes=(gi('wl-notes')?.value||'').trim();
+  if(!ticker||!name){alert('Ticker and name are required');return;}
+  sessionWatchlist.push({ticker,name,targetType,targetPrice,dma200:null,notes});
+  ['wl-ticker','wl-name','wl-price','wl-notes'].forEach(id=>{const el=gi(id);if(el)el.value='';});
+  renderWatchlist();
+}
+
+async function init(){
   showMain(false);showStatus(true);gi('err-area').innerHTML='';
   try{
-    await loadAll();
+    await Promise.all([loadAll(),loadWatchlist()]);
     buildModelNav();buildSleeveTabs();
     showStatus(false);showMain(true);renderAll();
     gi('updated-time').textContent='Updated '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
@@ -1595,11 +1968,12 @@ async function refreshAll(){
 async function init(){
   showStatus(true);
   try{
-    await loadAll();
+    await Promise.all([loadAll(),loadWatchlist(),loadSignals()]);
     if(!models.length)throw new Error('No models found — check sheet tab is named "Models"');
     activeModelId=models.find(m=>m.type==='equity')?.id||models[0].id;
     buildModelNav();buildSleeveTabs();
     showStatus(false);showMain(true);renderAll();
+    renderSignalsBar();
     gi('updated-time').textContent='Updated '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
     gi('footnote').textContent='Prices via Google Finance  ·  USD/CAD '+usdcadRate.toFixed(4)+'  ·  '+new Date().toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   }catch(e){
