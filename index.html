@@ -161,26 +161,31 @@
   .btn.gold:hover{background:var(--gold-dim)}
   .btn.sm{padding:5px 12px;font-size:11px}
   .status-hit{color:var(--teal);font-weight:600;font-size:11px}
-  .signals-bar{background:var(--navy);padding:10px 32px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08)}
-  .signal-card{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:8px 14px;min-width:180px;position:relative;cursor:default}
-  .signal-card.bullish{border-color:rgba(61,214,140,0.3);background:rgba(61,214,140,0.06)}
-  .signal-card.caution{border-color:rgba(184,134,11,0.4);background:rgba(184,134,11,0.07)}
-  .signal-card.bearish{border-color:rgba(192,57,43,0.4);background:rgba(192,57,43,0.07)}
-  .signal-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .signals-bar{background:var(--navy);padding:10px 32px;display:flex;gap:6px;flex-wrap:wrap;align-items:stretch;border-bottom:2px solid rgba(255,255,255,0.06);min-height:56px}
+  .signals-label{font-size:9px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:.12em;white-space:nowrap;display:flex;align-items:center;margin-right:6px;padding-right:12px;border-right:1px solid rgba(255,255,255,0.1)}
+  .signal-card{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:8px 14px;width:200px;flex-shrink:0;transition:background .15s}
+  .signal-card:hover{background:rgba(255,255,255,0.09)}
+  .signal-card.bullish{border-left:3px solid #3dd68c}
+  .signal-card.caution{border-left:3px solid #f5a623}
+  .signal-card.bearish{border-left:3px solid #ff6b6b}
+  .signal-card.unknown{border-left:3px solid rgba(255,255,255,0.15)}
+  .signal-left{flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+  .signal-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:2px}
   .signal-dot.bullish{background:#3dd68c}
   .signal-dot.caution{background:#f5a623}
   .signal-dot.bearish{background:#ff6b6b}
-  .signal-name{font-size:11px;font-weight:600;color:rgba(255,255,255,0.9);font-family:var(--sans)}
-  .signal-price{font-size:12px;color:rgba(255,255,255,0.7);font-family:var(--mono)}
-  .signal-ma{font-size:10px;color:rgba(255,255,255,0.4);font-family:var(--mono);margin-top:1px}
-  .signal-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.04em;margin-left:auto}
-  .signal-badge.golden{background:rgba(184,134,11,0.3);color:#f5a623}
-  .signal-badge.death{background:rgba(192,57,43,0.3);color:#ff6b6b}
-  .signal-badge.above{background:rgba(61,214,140,0.2);color:#3dd68c}
-  .signal-badge.below{background:rgba(192,57,43,0.2);color:#ff6b6b}
-  .signal-badge.dev{background:rgba(74,158,255,0.2);color:#4a9eff}
-  .signals-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;margin-right:4px}
-  .signals-loading{font-size:11px;color:rgba(255,255,255,0.4);font-family:var(--mono);padding:4px 0}
+  .signal-dot.unknown{background:rgba(255,255,255,0.2)}
+  .signal-body{flex:1;min-width:0}
+  .signal-name{font-size:11px;font-weight:600;color:rgba(255,255,255,0.88);font-family:var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .signal-price{font-size:13px;font-weight:600;color:#fff;font-family:var(--mono);line-height:1.2}
+  .signal-ma{font-size:9px;color:rgba(255,255,255,0.35);font-family:var(--mono);margin-top:2px;white-space:nowrap}
+  .signal-badges{display:flex;flex-direction:column;gap:2px;align-items:flex-end;flex-shrink:0}
+  .signal-badge{font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;letter-spacing:.03em;white-space:nowrap}
+  .signal-badge.golden{background:rgba(184,134,11,0.35);color:#f5c842}
+  .signal-badge.death{background:rgba(192,57,43,0.35);color:#ff8080}
+  .signal-badge.dev-pos{background:rgba(74,158,255,0.2);color:#7ab8ff}
+  .signal-badge.dev-neg{background:rgba(192,57,43,0.2);color:#ff8080}
+  .signals-loading{font-size:11px;color:rgba(255,255,255,0.35);font-family:var(--mono);display:flex;align-items:center}
   .status-near{color:var(--gold);font-weight:600;font-size:11px}
   .status-watching{color:var(--text3);font-size:11px}
   .target-bar-bg{height:5px;border-radius:3px;background:var(--bg4);width:80px;display:inline-block;vertical-align:middle;overflow:hidden;margin-left:6px}
@@ -218,7 +223,7 @@
   <!-- TOP NAVIGATION BAR -->
   <div class="topbar">
     <div class="topbar-left">
-      <div class="logo">Beacon <span>Portfolios</span></div>
+      <div class="logo">Shaw <span>WM</span></div>
       <div class="live-badge"><span class="live-dot"></span><span id="updated-time">loading...</span></div>
     </div>
     <div class="topbar-right">
@@ -1183,6 +1188,10 @@ function toggleRowExpand(ticker){
           style="background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:6px 10px;font-family:var(--sans);font-size:12px;color:var(--text);outline:none;width:150px"
           onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'">
         <div style="font-size:10px;color:var(--text3);margin-top:4px">Used when pushing to change log</div>
+        <button class="btn sm teal" style="margin-top:8px" onclick="fetchHistoricalPrice('${ticker}','${h.currency||'CAD'}')">
+          &#8635; Fetch price on this date
+        </button>
+        <div id="hist-price-result-${ticker}" style="font-size:11px;color:var(--text3);margin-top:6px;font-family:var(--mono)"></div>
       </div>
       <div style="flex:1;min-width:300px">
         <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Replace with new holding</div>
@@ -1204,6 +1213,64 @@ function toggleRowExpand(ticker){
     </div>
   </td>`;
   tr.after(actionRow);
+}
+
+async function fetchHistoricalPrice(ticker, currency){
+  const dateEl = gi('row-date-'+ticker);
+  const resultEl = gi('hist-price-result-'+ticker);
+  if(!dateEl||!resultEl) return;
+
+  const dateStr = dateEl.value;
+  if(!dateStr){ resultEl.textContent='Please select a date first'; return; }
+
+  resultEl.textContent = 'Fetching...';
+
+  try{
+    // Convert .TO to Yahoo format, TSE: prefix too
+    const yTicker = ticker.startsWith('TSE:')
+      ? ticker.replace('TSE:','')+'.TO'
+      : ticker;
+
+    // Fetch a range around the date to find the closest trading day close
+    const targetDate = new Date(dateStr+'T12:00:00');
+    const startDate  = new Date(targetDate); startDate.setDate(startDate.getDate()-5);
+    const endDate    = new Date(targetDate); endDate.setDate(endDate.getDate()+5);
+    const startTs = Math.floor(startDate.getTime()/1000);
+    const endTs   = Math.floor(endDate.getTime()/1000);
+
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yTicker)}?interval=1d&period1=${startTs}&period2=${endTs}`;
+    const proxy = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+    const r = await fetch(proxy, {signal: AbortSignal.timeout(8000)});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j = await r.json();
+    const res = j.chart?.result?.[0];
+    if(!res) throw new Error('No data returned');
+
+    const timestamps = res.timestamp||[];
+    const closes = res.indicators?.quote?.[0]?.close||[];
+
+    // Find the closest date
+    let best=null, bestDiff=Infinity;
+    timestamps.forEach((ts,i)=>{
+      if(closes[i]==null) return;
+      const diff = Math.abs(ts*1000 - targetDate.getTime());
+      if(diff<bestDiff){ bestDiff=diff; best={ts,price:closes[i]}; }
+    });
+
+    if(!best) throw new Error('No price found near this date');
+
+    const closestDate = new Date(best.ts*1000).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'});
+    const priceStr = `${currency==='USD'?'US$':'C$'}${best.price.toFixed(2)}`;
+    resultEl.innerHTML = `Closing price on ${closestDate}: <strong style="color:var(--navy)">${priceStr}</strong>
+      <br><span style="color:var(--text3)">→ Use this as your purchase price in the weight input above</span>`;
+
+    // Auto-fill purchase price display — store for reference
+    resultEl.dataset.price = best.price;
+    resultEl.dataset.date  = closestDate;
+
+  } catch(e){
+    resultEl.textContent = 'Could not fetch: '+e.message;
+  }
 }
 
 function replaceHolding(oldTicker){
@@ -1812,22 +1879,21 @@ async function loadSignals(){
       };
     });
 
-    // Parse signals prices
-    const ph=priceRows[0]?.map(x=>x.toLowerCase().trim())||['ticker','current','ma50','ma200'];
+    // Parse signals prices — normalize tickers for matching
     const priceMap={};
     priceRows.slice(1).forEach(r=>{
       const ticker=(r[0]||'').trim();
       if(!ticker)return;
-      priceMap[ticker]={
-        current:parseFloat(r[1])||null,
-        ma50:parseFloat(r[2])||null,
-        ma200:parseFloat(r[3])||null
-      };
+      const data={current:parseFloat(r[1])||null,ma50:parseFloat(r[2])||null,ma200:parseFloat(r[3])||null};
+      priceMap[ticker]=data;
+      // Also index by normalized form so TSE:XIU matches XIU.TO and vice versa
+      if(ticker.startsWith('TSE:')) priceMap[ticker.replace('TSE:','')+'.TO']=data;
+      if(ticker.endsWith('.TO'))    priceMap['TSE:'+ticker.replace('.TO','')]=data;
     });
 
     signalsData=sigConfig.map(s=>({
       ...s,
-      ...( priceMap[s.ticker]||{current:null,ma50:null,ma200:null} )
+      ...( priceMap[s.ticker]||priceMap[s.ticker.replace('TSE:','').replace('.TO','')+'.TO']||priceMap['TSE:'+s.ticker.replace('.TO','')]||{current:null,ma50:null,ma200:null} )
     }));
   } catch(e){ signalsData=[]; Logger?.log?.('Signal load error: '+e.message); }
 }
@@ -1847,8 +1913,6 @@ function renderSignalsBar(){
     return;
   }
   if(loading) loading.style.display='none';
-
-  // Remove old signal cards
   bar.querySelectorAll('.signal-card').forEach(el=>el.remove());
 
   signalsData.forEach(s=>{
@@ -1858,14 +1922,11 @@ function renderSignalsBar(){
 
     let badges='';
     if(s.current&&s.ma50&&s.ma200){
-      // Golden / death cross
       if(s.ma50>s.ma200) badges+=`<span class="signal-badge golden">GOLDEN X</span>`;
       else badges+=`<span class="signal-badge death">DEATH X</span>`;
-
-      // Above/below 200
       const dev=((s.current-s.ma200)/s.ma200)*100;
-      if(Math.abs(dev)>=s.devPct){
-        badges+=`<span class="signal-badge dev">${dev>=0?'+':''}${dev.toFixed(1)}% 200d</span>`;
+      if(Math.abs(dev)>=(s.devPct||5)){
+        badges+=`<span class="signal-badge ${dev>=0?'dev-pos':'dev-neg'}">${dev>=0?'+':''}${dev.toFixed(1)}%</span>`;
       }
     }
 
@@ -1874,20 +1935,18 @@ function renderSignalsBar(){
     const ma200Str=s.ma200?s.ma200.toFixed(2):'--';
 
     card.innerHTML=`
-      <div class="signal-dot ${status}"></div>
-      <div>
+      <div class="signal-left"><div class="signal-dot ${status}"></div></div>
+      <div class="signal-body">
         <div class="signal-name">${s.name}</div>
         <div class="signal-price">${priceStr}</div>
         <div class="signal-ma">50d ${ma50Str} · 200d ${ma200Str}</div>
       </div>
-      ${badges}`;
+      ${badges?`<div class="signal-badges">${badges}</div>`:''}`;
 
-    // Tooltip on hover showing full details
     card.title=`${s.name} (${s.ticker})\nCurrent: ${priceStr}\n50-Day MA: ${ma50Str}\n200-Day MA: ${ma200Str}\nStatus: ${status.charAt(0).toUpperCase()+status.slice(1)}`;
     bar.appendChild(card);
   });
 
-  // Check for alerts and show browser notification if needed
   checkSignalAlerts();
 }
 
@@ -1905,7 +1964,7 @@ function checkSignalAlerts(){
   });
   if(alerts.length&&notifPermission==='granted'){
     alerts.forEach(msg=>{
-      new Notification('Beacon Portfolios — Market Signal',{body:msg});
+      new Notification('Shaw WM — Market Signal',{body:msg});
     });
   }
 }
@@ -1930,7 +1989,7 @@ function requestNotificationPermission(){
     notifPermission=p;
     checkNotifPermission();
     if(p==='granted'){
-      new Notification('Beacon Portfolios',{body:'Watchlist alerts are now enabled.'});
+      new Notification('Shaw WM',{body:'Watchlist alerts are now enabled.'});
     }
   });
 }
